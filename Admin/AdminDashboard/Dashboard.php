@@ -47,7 +47,7 @@ include('../../Connection/Connect.php');
                     <div class="text-end text-secondary" style="margin-top: 120px;">
                         Last Seen:
                         <?php
-                        $date1 = date_create('2023-06-13'); //old
+                        $date1 = date_create('2023-06-14'); //old
                         $date2 = date_create(date('Y-m-d')); //new
                         $diff = date_diff($date1, $date2);
 
@@ -118,7 +118,9 @@ include('../../Connection/Connect.php');
 
                 <div class="row mt-4">
                     <div class="col-8">
-                        <div class="border border-all d-flex flex-column gap-3 p-4"></div>
+                        <div class="border border-all d-flex flex-column gap-3 p-4" style="background: none;">
+                            <div id="curve_chart" style="width: auto; height: 500px;"></div>
+                        </div>
                     </div>
 
                     <div class="col-4">
@@ -133,8 +135,8 @@ include('../../Connection/Connect.php');
                                 $sum_pro = $con->query("SELECT SUM(Qty) AS Qty FROM product");
                                 while ($row_sum = $sum_pro->fetch_assoc()) {
                                 ?>
-                                    <h4 class="pt-3 text-white" data-count="<?= $row_sum['Qty'] ?>">
-                                        Total Stock-IN: &nbsp;&nbsp; <span class="mx-5"> 0 </span>
+                                    <h4 class="pt-3 text-white" >
+                                        Total Stock-IN: &nbsp;&nbsp; <span class="mx-5"> <?= $row_sum['Qty'] ?> </span>
                                     </h4>
                                 <?php } ?>
                             </div>
@@ -148,8 +150,8 @@ include('../../Connection/Connect.php');
                                 $sum_proExpired = $con->query("SELECT SUM(Qty) AS Qty FROM product WHERE StatusID = 4");
                                 while ($row_sum = $sum_proExpired->fetch_assoc()) {
                                 ?>
-                                    <h4 class="pt-3 text-white" data-count="<?= $row_sum['Qty'] ?>">
-                                        Expired Product: <span class="mx-5"> 0 </span>
+                                    <h4 class="pt-3 text-white">
+                                        Expired Product: <span class="mx-5"> <?= $row_sum['Qty'] ?> </span>
                                     </h4>
                                 <?php } ?>
                             </div>
@@ -170,7 +172,7 @@ include('../../Connection/Connect.php');
                                 while ($row_sum = $sum_proOut->fetch_assoc()) {
                                 ?>
                                     <h4 class="pt-3 text-white" data-count="<?= $row_sum['Qty'] ?>">
-                                        Sold Out: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        Sold Out: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <span class="mx-5"> 0 </span>
                                     </h4>
                                 <?php } ?>
@@ -320,7 +322,10 @@ include('../../Connection/Connect.php');
                 </div>
             </div>
         </div>
+
+
     </div>
+
 
 
 
@@ -364,9 +369,7 @@ include('../../Connection/Connect.php');
                                         <td>1</td>
                                         <td>1</td>
                                     </tr>
-
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -380,7 +383,6 @@ include('../../Connection/Connect.php');
     <div class="offcanvas offcanvas-start w-100" tabindex="-1" id="expired" aria-labelledby="expiredLabel" style="transition: 0.8s ease;">
         <div class="offcanvas-header">
             <img data-bs-dismiss="offcanvas" aria-label="Close" src="../../Images/gobackicon.png" style="cursor: grab;" width="80px" height="80px">
-
         </div>
         <div class="offcanvas-body">
             <div class="row">
@@ -419,8 +421,8 @@ include('../../Connection/Connect.php');
 
                                 <?php } ?>
                             </tbody>
-
                         </table>
+
                     </div>
                 </div>
             </div>
@@ -479,6 +481,9 @@ include('../../Connection/Connect.php');
 
 <script src="../../Action.js"></script>
 
+<!-- Google-Chartjs -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <!-- Animation Number Count -->
 <script>
     $(document).ready(function() {
@@ -493,9 +498,46 @@ include('../../Connection/Connect.php');
                 easing: "linear",
 
                 step: function() {
-                    This.text(Math.floor(this.Count) + 1)
+                    This.text(Math.round(this.Count))
                 }
             })
         })
     })
+</script>
+
+
+
+<script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Year', 'Sales'],
+            ['2004', 500],
+            ['2005', 1170],
+            ['2006', 660],
+            ['2007', 1030],
+            ['2007', 2030],
+            ['2007', 3030],
+            ['2007', 2000],
+            ['2007', 5030],
+            ['2007', 1030]
+        ]);
+
+        var options = {
+            title: 'The Curve of Selling',
+            curveType: 'function',
+            colors: ['red'],
+            legend: {
+                position: 'bottom'
+            }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+    }
 </script>

@@ -10,7 +10,7 @@ include('./Connection/Connect.php');
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title> Metaverse Shopping</title>
-    <link rel="shortcut icon" type="image" href="./Images/image 16.png">
+    <!-- <link rel="shortcut icon" type="image" href="./Images/image 16.png"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -94,10 +94,10 @@ if (isset($_POST['submit'])) {
     $pw = $_POST['password'];
 
     if (empty($uname) || empty($pw)) {
-        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert" style="top: 0; width: 100%; position: absolute; border-radius: 0;">
-                    Missing username or Password
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>';
+        echo '<div class="d-flex justify-content-between alert alert-dismissible  fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; top: 0; position: fixed; width:100%; transition: 0.6s ease">
+                <h5 class="pt-3 text-white"> Missing UserName or password </h5>
+                <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+            </div>';
     } else {
         $validate = "SELECT * FROM `staff` WHERE UserName = '$uname' AND Password = '$pw'";
         $result = $con->query($validate);
@@ -106,7 +106,7 @@ if (isset($_POST['submit'])) {
                 while ($row = $result->fetch_assoc()) {
                     $_SESSION['FirstName'] = $row['FirstName'];
                     $_SESSION['LastName'] = $row['LastName'];
-                    // $_SESSION['Photo'] = $row['Photo'];
+                    $_SESSION['Photo'] = $row['Photo'];
 
 
                     if ($row['PositionID'] == 89) {
@@ -116,10 +116,10 @@ if (isset($_POST['submit'])) {
                     }
                 }
             } else {
-                echo '<div class="alert alert-warning alert-dismissible fade show" role="alert" style="top: 0; width: 100%; position: absolute; border-radius: 0; transition: 1.5s ease">
-                                Not Correct username or Password
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                          </div>';
+                echo '<div class="d-flex justify-content-between alert alert-dismissible  fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; top: 0; position: fixed; width:100%; transition: 0.6s ease">
+                        <h5 class="pt-3 text-white"> Not Correct UserName or Password </h5>
+                        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+                    </div>';
             }
         }
     }

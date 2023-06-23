@@ -75,36 +75,36 @@ if (isset($_POST['submit'])) {
 
     if (mysqli_num_rows($check_account) > 0) {
         echo
-        '<div class="alert alert-warning alert-dismissible fade show" role="alert" style="top: 0; width: 100%; position: absolute; border-radius: 0;">
-                    These Username and Password have been used by another user!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>';
+        '   <div class="alert alert-warning alert-dismissible fade show" role="alert" style="top: 0; width: 100%; position: absolute; border-radius: 0;">
+                These Username and Password have been used by another user!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>';
     } else {
         $ins_emp = "INSERT INTO `staff`(`FirstName`, `LastName`, `Gender`, `PositionID`, `DOB`, `Address`, `Contact`, `Email`, `Photo`, `UserName`, `Password`, `WorkOn`) 
                     VALUES('$fname', '$lname', '$gender', '$pos', '$dob', '$address', '$phone', '$email', '$photo', '$username', '$password', '$work') ";
 
         $con->query($ins_emp);
-        // $result = $con->query($ins_emp);
-        // if ($result === true) {
-        //     $session_caught = "SELECT * FROM `staff`";
-        //     $caught_result = $con->query($session_caught);
+        $result = $con->query($ins_emp);
+        if ($result === true) {
+            $session_caught = "SELECT * FROM `staff`";
+            $caught_result = $con->query($session_caught);
 
-        //     if (mysqli_num_rows($caught_result) > 0) {
-        //         while ($row = $caught_result->fetch_assoc()) {
-        //             $_SESSION['FirstName']  = $row['FirstName'];
-        //             $_SESSION['LastName']   = $row['LastName'];
-        //             $_SESSION['Photo']      = $row['Photo'];
+            if (mysqli_num_rows($caught_result) > 0) {
+                while ($row = $caught_result->fetch_assoc()) {
+                    $_SESSION['FirstName']  = $row['FirstName'];
+                    $_SESSION['LastName']   = $row['LastName'];
+                    $_SESSION['Photo']      = $row['Photo'];
 
-        //             if ($row['PositionID'] == 89) {
-        //                 header('location: ./Admin/AdminDashboard/Dashboard.php ');
-        //             } else if ($row['PositionID'] == 90) {
-        //                 header('location: ./Seller/accountant.php ');
-        //             }
-        //         }
-        //     }
-        // } else {
-        //     echo 'failed to insert!!';
-        // }
+                    if ($row['PositionID'] == 89) {
+                        header('location: ./Admin/AdminDashboard/Dashboard.php ');
+                    } else if ($row['PositionID'] == 90) {
+                        header('location: ./Seller/accountant.php ');
+                    }
+                }
+            }
+        } else {
+            echo 'failed to insert!!';
+        }
     }
 }
 

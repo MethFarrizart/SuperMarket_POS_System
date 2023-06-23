@@ -9,8 +9,8 @@
 
 <body>
     <!-- Category -->
-    <div class="row mt-3" id="slide2">
-        <div class="col-12">
+    <div class="row mt-3">
+        <div class="col-12" id="slide2">
             <div class="bg-white p-4 shadow border" style="border-radius: 20px;">
                 <p style="font-weight: bold; text-decoration:overline" class="fs-5">
                     Category List
@@ -22,7 +22,7 @@
 
                 <table class="table table-hover mt-3">
                     <thead>
-                        <tr class="mt-4 text-white text-center h5" style="background-color: rgb(13, 77, 141); line-height: 50px;">
+                        <tr class="mt-4 text-white text-center h5" style="background: linear-gradient( rgb(13, 73, 141), rgb(33, 150, 188)); line-height: 50px;">
                             <td>CategoryID</td>
                             <td>Category Name</td>
                             <td>Action</td>
@@ -103,6 +103,39 @@
                         </div>
                     <?php } ?>
                 </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- modal add category -->
+    <div class="modal fade" style="background-color: rgba(0, 0, 0, 0.685);" id="addcate" tabindex="-1" aria-labelledby="addcateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-white" id="addproLabel">Product Control</h1>
+                    <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="modal" aria-label="Close" style="cursor: grab;">
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row gap-4">
+                            <div class="col-12">
+                                <label for="" class="control-label">Category Name:</label>
+                                <input type="text" name="cate_name" class="form-control">
+                            </div>
+
+                            <div class="col-12">
+                                <label for="" class="control-label">Description:</label>
+                                <textarea name="cate_descr" class="form-control" rows="10"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer mt-5">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Leave</button>
+                            <button type="submit" name="add_cate" class="btn btn-success">Add</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

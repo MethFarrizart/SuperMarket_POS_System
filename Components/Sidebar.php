@@ -1,7 +1,6 @@
 <?php
 include('../../Connection/connect.php');
 session_start();
-// session_destroy();
 if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
     header('location: ../../../Mart_Pos_System/index.php');
 }
@@ -21,20 +20,23 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
+
 <body>
     <div class="d-flex flex-column sidebar">
         <div class="container">
-            <div class="d-flex py-4" style="gap: 3px; border-bottom: 2px solid white;">
-                <img class="h-25 pt-2" src="../../Images/image 16.png" alt="">
-                <div class="h2 text-white">Metaverse University</div>
+            <div align=center class="d-flex flex-column">
+                <div class=" glow-img">
+                    <img class="w-100" src="../../Images/phoenix.png" alt="">
+                </div>
+                <div class="h4 text-white" id="glow-txt" style="margin-top: -50px;">Phoenix Super-Fresh</div>
             </div>
         </div>
 
-        <div class="pt-3" align="center">
-            <img src="../../Images/admin.png" alt="">
+        <div class="pt-5" align="center">
+            <img src="../../Images/admin.png" class="w-50 h50" alt="">
         </div>
 
-        <div class="d-flex mt-3 mb-5 flex-column gap-3 link">
+        <div class="d-flex mb-5 flex-column gap-3 link">
             <!-- General information link -->
             <a href="../../Admin/AdminDashboard/Dashboard.php" class="active">
                 <div class="d-flex ps-4 pb-2 gap-4">
@@ -67,14 +69,14 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
 
             <!--Supplier link -->
-            <a href="../../Admin/AdminDashboard/Supplier.php">
+            <!-- <a href="../../Admin/AdminDashboard/Supplier.php">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn0.iconfinder.com/data/icons/supply-chain-dualine-flat/64/Supplier-256.png" alt="">
                     <div class="h5 pt-3 text-white">
                         Supplier
                     </div>
                 </div>
-            </a>
+            </a> -->
 
 
             <!--Staff link -->

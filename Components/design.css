@@ -52,12 +52,16 @@ a{
 .header{
     position: fixed !important;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between !important;
     top: 0;
+    width: 100%;
     background:linear-gradient(to right,rgba(13, 13, 200, 0.852), dodgerblue);
-
 }
 
+
+#glow-txt {
+    color: red;
+}
 
 
 .sidebar.active{
@@ -87,7 +91,6 @@ a{
 .btn.subhover:hover{
     background-color: #02771C;
 }
-
 
 
 

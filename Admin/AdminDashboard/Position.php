@@ -1,7 +1,7 @@
 <?php
 include('../../Connection/Connect.php');
 
-
+// Add Position
 if (isset($_POST['add_pos'])) {
     $pos_name   = $_POST['pos_name'];
     $pos_sal    = $_POST['pos_sal'];
@@ -21,6 +21,7 @@ if (isset($_POST['add_pos'])) {
 
 ?>
 
+<!-- Update Position -->
 <?php
 if (isset($_POST['upd_pos'])) {
     $check_id       = $_POST['check_id'];
@@ -44,15 +45,15 @@ if (isset($_POST['upd_pos'])) {
     $con->query($upd_pos);
 
 ?>
-    <div class="d-flex justify-content-between alert alert-dismissible alert_update fade show p-4 pt-3" role="alert" style="background-color:green; border-radius: 0;">
-        <h5 class="pt-3 text-white"> This position <?php echo $upd_pos_name ?> has updated</h5>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_update fade show p-4 pt-3" role="alert" style="background-color:green; border-radius: 0; z-index: 9999999999999999">
+        <h5 class="pt-3 text-white"> This position on ID = <?php echo $check_id ?> has updated</h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
 <?php } ?>
 
 
-
+<!-- delete Position -->
 <?php
 if (isset($_GET['delete'])) {
     $id = $_GET['del_id'];
@@ -62,13 +63,12 @@ if (isset($_GET['delete'])) {
     include_once('Position.php');
 
 ?>
-    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0;">
-        <h5 class="pt-3 text-white"> This position <?php echo $id ?> has deleted</h5>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; top: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+        <h5 class="pt-3 text-white"> This Position on ID = <?php echo $id ?> has deleted</h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
 <?php }
-
 
 ?>
 
@@ -87,12 +87,13 @@ if (isset($_GET['delete'])) {
 </head>
 
 <style>
-    .alert_delete, .alert_update{
-        top: 0; 
-        width: 100%; 
-        height: 9vh; 
-        position: absolute; 
-        z-index: 3; 
+    .alert_delete,
+    .alert_update {
+        top: 0;
+        width: 100%;
+        height: 9vh;
+        position: absolute;
+        z-index: 999999999;
     }
 </style>
 
@@ -113,9 +114,9 @@ if (isset($_GET['delete'])) {
                 <div class="row" style="margin-top: 140px;">
                     <div class="col-12">
                         <div class="bg-white p-4 shadow border" style="border-radius: 20px;">
-                            <p style="font-weight: bold; text-decoration: overline" class="fs-5">
+                            <h3 style="font-weight: bold; ">
                                 Position
-                            </p>
+                            </h3>
 
                             <div class="d-flex gap-2 justify-content-end">
                                 <button class="btn p-3 btn-1 text-white" data-bs-toggle="modal" data-bs-target="#position">Add Position</button>
@@ -159,37 +160,37 @@ if (isset($_GET['delete'])) {
                                         </tr>
                                     </tbody>
 
-                                    <!-- <button type="submit" class="btn btn-danger" onclick="show_dialog()">Test</button> -->
-
                                     <!-- Delete Position -->
-                                    <div class="offcanvas offcanvas-start w-25" tabindex="-1" id="deletePos-<?= $pos_row['PositionID'] ?>" aria-labelledby="deleteLabel">
-                                        <div class="offcanvas-header">
-                                            <h5 class="offcanvas-title" id="deleteLabel">Delete Position</h5>
+                                    <div class="offcanvas offcanvas-top w-25 h-50" tabindex="-1" id="deletePos-<?= $pos_row['PositionID'] ?>" aria-labelledby="deleteLabel">
+                                        <div class="offcanvas-header pt-3" style="background-color:crimson">
+                                            <h3 class="offcanvas-title text-warning" id="deleteLabel"> Are You Sure?</h3>
                                             <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="offcanvas" aria-label="Close" style="cursor: grab;">
                                         </div>
-                                        <div class="offcanvas-body bg-warning">
+                                        <div class="offcanvas-body">
                                             <form action="" method="get">
-                                                <h3> Are You Sure?</h3>
+                                                <p class="mt-5 text-center"> Do you want to delete this Position as <?= '"' . $pos_row['PositionName'] . '" ?' ?></p>
 
                                                 <div class="col-12">
-                                                    <input type="text" class="form-control" name="del_id" value="<?= $pos_row['PositionID'] ?>" readonly>
+                                                    <input type="hidden" class="form-control" name="del_id" value="<?= $pos_row['PositionID'] ?>" readonly>
                                                 </div>
 
-                                                <div class="modal-footer mt-5">
-                                                    <button type="submit" class="btn btn-danger" name="delete">Delete</button>
+                                                <div class="modal-footer mt-5 gap-2 d-flex">
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas">Leave</button>
+                                                    <button type="submit" class="btn btn-outline-danger" name="delete">Delete</button>
                                                 </div>
                                             </form>
                                         </div>
+
                                     </div>
 
 
                                     <!-- Update Position -->
-                                    <div class="offcanvas offcanvas-start w-25" tabindex="-1" id="editpos-<?= $pos_row['PositionID'] ?>" aria-labelledby="editLabel">
+                                    <div class="offcanvas offcanvas-end w-25" style="color: white; background:linear-gradient(rgb(8, 234, 234), dodgerblue, rgb(13, 13, 183));" tabindex="-1" id="editpos-<?= $pos_row['PositionID'] ?>" aria-labelledby="editLabel">
                                         <div class="offcanvas-header">
-                                            <h5 class="offcanvas-title" id="editLabel">Update Position</h5>
+                                            <h3 class="offcanvas-title" id="editLabel">Update Position</h3>
                                             <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="offcanvas" aria-label="Close" style="cursor: grab;">
                                         </div>
-                                        <div class="offcanvas-body bg-primary">
+                                        <div class="offcanvas-body">
                                             <form action="" method="post" enctype="multipart/form-data">
                                                 <div class="row gap-4">
                                                     <div class="col-12">
@@ -269,7 +270,7 @@ if (isset($_GET['delete'])) {
 
                             <div class="col-12">
                                 <label for="" class="control-label">Image:</label>
-                                <input type="file" name="pos_img" class="form-control" onchange="previewIns()" required> <br>
+                                <input type="file" name="pos_img" class="form-control" onchange="previewIns()"> <br>
                                 <img width="100px" height="100px" id="frame">
                             </div>
 
