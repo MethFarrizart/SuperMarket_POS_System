@@ -4,11 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../Components/design.css">
+    <title> Phoenix Super-Fresh</title>
+    <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
 </head>
+<style>
+    .text-move {
+        animation: anime 0.5s ease;
+    }
+
+    @keyframes anime {
+        0% {
+            transform: translate(400px, 0);
+        }
+    }
+
+    .title {
+        animation: title 0.5s ease;
+    }
+
+    @keyframes title {
+        0% {
+            transform: translate(-500px, 0);
+        }
+    }
+</style>
 
 <body>
 
@@ -22,10 +41,23 @@
             include('../../Components/Navbar.php');
             ?>
 
-            <div class="container-fluid" style="margin-top: 120px;">
+            <div class="container-fluid" style="margin-top: 130px;">
+                <h4 style="text-decoration:overline 3px solid blue" class="title"><b>Report Last Updated</b> </h4>
+
+
+                <!-- Digital Clock -->
+                <div class="text-end text-move" style="margin-bottom: 20px">
+                    <strong class="fs-5" id="day"></strong> <strong>/</strong>
+                    <strong class="fs-5" id="month"></strong> <strong>/</strong>
+                    <!-- <strong class="fs-5" id="nth"></strong> <sup><b id="th"></b></sup> <strong>/</strong> -->
+                    <strong class="fs-5" id="year"></strong> <strong class="fs-5">~</strong>
+                    <strong class="fs-5" id="hrs"></strong> <strong class="fs-5">:</strong>
+                    <strong class="fs-5" id="min"></strong> <strong class="fs-5">:</strong>
+                    <strong class="fs-5" id="sec"></strong> <strong class="fs-5" id="time"></strong>
+                </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="border border-all gap-3 p-4 shadow " style="border-radius: 20px">
+                        <div class="border border-all gap-3 p-4 shadow " style="border-radius: 20px; background: none">
                             <div style="column-count: 2; column-rule: 1px solid; ">
 
                                 <!-- Category Report -->
@@ -36,6 +68,7 @@
                                     <div class="mt-4" id="category" style="width: 740px; height: 400px; margin-top: -10px;"></div>
 
                                 </div>
+
 
                                 <!-- Stock Report -->
                                 <div align="center">
@@ -62,36 +95,69 @@
 
                     <!-- Top Sale Report -->
                     <div class="col-12 mt-4">
-                        <div class="border border-all d-flex flex-column gap-3 p-4 shadow;" style="border-radius: 20px">
+                        <div class="border border-all d-flex flex-column gap-3 p-4 shadow;" style="border-radius: 20px; background: none">
                             <h3>
                                 <b style="color: rgb(192, 170, 48);">Top Sale</b>
                             </h3>
                             <table class="table table-hover">
                                 <thead>
-                                    <tr id="anim" class=" mt-4 text-white text-center h5" style="background: linear-gradient( rgb(13, 73, 141), rgb(33, 150, 188)); line-height: 50px;">
+                                    <tr class=" mt-4 text-white text-center h5" style="background: linear-gradient( rgb(13, 73, 141), rgb(33, 150, 188)); line-height: 50px;">
                                         <td>ProductID</td>
-                                        <td>Product Name</td>
-                                        <td>Stock-Out</td>
-                                        <td>Balance</td>
-                                        <td>Image</td>
+                                        <td> Product Name</td>
+                                        <td> Qty in Stock</td>
+                                        <td> Image </td>
                                     </tr>
                                 </thead>
 
                                 <tbody class="text-center h6" style="line-height: 50px;">
-                                    <tr>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                    </tr>
+                                    <?php
+                                    $top_pro = $con->query("SELECT DISTINCT OD.ProductID, p.ProductID, p.Image, p.Qty, p.ProductName, COUNT(*) AS Amount FROM invoice_detail OD 
+                                            INNER JOIN Product p ON p.ProductID = OD.ProductID GROUP BY p.ProductID 
+                                            HAVING Amount > 100
+                                            ORDER BY Amount DESC LIMIT 5");
+                                    if (mysqli_num_rows($top_pro) > 0) {
+                                        while ($top_pro_row = $top_pro->fetch_assoc()) {
+                                    ?>
+                                            <tr class="text-center h6" style="line-height: 50px;">
+                                                <td><?= $top_pro_row['ProductID'] ?></td>
+                                                <td><?= $top_pro_row['ProductName'] ?></td>
+                                                <td><?= $top_pro_row['Qty'] ?></td>
+                                                <td><img src="../AdminDashboard/Images/<?= $top_pro_row['Image'] ?>" width="50" height="50" alt=""></td>
+                                            </tr>
+
+                                        <?php }
+                                    } else { ?>
+                                        <tr>
+                                            <td colspan="4" align=center>
+                                                <div class="d-flex gap-3 mt-5 justify-content-center">
+                                                    <div class="lds-ellipsis">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                    <h4><i>Nothing ...! </i></h4>
+                                                    <div class="lds-ellipsis">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    <?php }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
+
+                    <!-- Low Sale -->
                     <div class="col-12 mt-4">
-                        <div class="border border-all d-flex flex-column gap-3 p-4 shadow;" style="border-radius: 20px">
+                        <div class="border border-all d-flex flex-column gap-3 p-4 shadow;" style="border-radius: 20px; background: none">
                             <h3>
                                 <b style="color: crimson;">Low Sale</b>
                             </h3>
@@ -99,22 +165,52 @@
                                 <thead>
                                     <tr id="anim" class=" mt-4 text-white text-center h5" style="background: linear-gradient( rgb(13, 73, 141), rgb(33, 150, 188)); line-height: 50px;">
                                         <td>ProductID</td>
-                                        <td>Product Name</td>
-                                        <td>Stock-Out</td>
-                                        <td>Balance</td>
-                                        <td>Image</td>
+                                        <td> Product Name</td>
+                                        <td> Qty in Stock</td>
+                                        <td> Image </td>
                                     </tr>
                                 </thead>
 
                                 <tbody class="text-center h6" style="line-height: 50px;">
-                                    <tr>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                    </tr>
+                                    <?php
+                                    $top_pro = $con->query("SELECT DISTINCT OD.ProductID, p.ProductID, p.Image, p.Qty, p.ProductName, COUNT(*) AS Amount FROM invoice_detail OD 
+                                            INNER JOIN Product p ON p.ProductID = OD.ProductID GROUP BY p.ProductID 
+                                            HAVING Amount < 10
+                                            ORDER BY Amount DESC LIMIT 5");
+                                    if (mysqli_num_rows($top_pro) > 0) {
+                                        while ($top_pro_row = $top_pro->fetch_assoc()) {
+                                    ?>
+                                            <tr class="text-center h6" style="line-height: 50px;">
+                                                <td><?= $top_pro_row['ProductID'] ?></td>
+                                                <td><?= $top_pro_row['ProductName'] ?></td>
+                                                <td><?= $top_pro_row['Qty'] ?></td>
+                                                <td><img src="../AdminDashboard/Images/<?= $top_pro_row['Image'] ?>" width="50" height="50" alt=""></td>
+                                            </tr>
 
+                                        <?php }
+                                    } else { ?>
+                                        <tr>
+                                            <td colspan="4" align=center>
+                                                <div class="d-flex gap-3 mt-5 justify-content-center">
+                                                    <div class="lds-ellipsis">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                    <h4><i>Nothing ...! </i></h4>
+                                                    <div class="lds-ellipsis">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    <?php }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -145,6 +241,8 @@
 </body>
 
 </html>
+
+<script src="../../../Mart_POS_System/Action.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
@@ -161,24 +259,15 @@
     function drawChart() {
 
         var data = google.visualization.arrayToDataTable([
-            ['Name', 'Qty'],
-            [
-                'Work', 11
-            ],
-            [
-                'Eat', 2
-            ],
-            [
-                'Commute', 2
-            ],
-            [
-                'Watch TV', 2
-            ],
-            [
-                'Sleep', 7
-            ]
-
-
+            ['CateName', 'TotalAmount'],
+            <?php
+            $cate = $con->query("SELECT DISTINCT C.CategoryID, C.CategoryName, COUNT(C.CategoryID) AS TotalAmount FROM invoice_detail OD 
+            INNER JOIN category C ON C.CategoryID = OD.CategoryID GROUP BY C.CategoryID");
+            while ($cate_row = $cate->fetch_assoc()) {
+                $cateName = $cate_row['CategoryName'];
+                $countCate = $cate_row['TotalAmount'];
+            ?>['<?= $cateName ?>', <?= $countCate ?>],
+            <?php } ?>
         ]);
 
         var options = {
@@ -207,10 +296,10 @@
             ['Names', 'Qtys'],
             <?php
             $each_status = $con->query("SELECT DISTINCT s.StatusID, s.StatusName, Count(*) As Total FROM product p INNER JOIN Status s ON s.StatusID = p.StatusID GROUP BY p.StatusID");
-                while ($row_each_status = $each_status->fetch_assoc()) {
-                    $status = $row_each_status['StatusName'];
-                    $count = $row_each_status['Total'];
-            ?>  ['<?= $status ?>', <?= $count ?>],
+            while ($row_each_status = $each_status->fetch_assoc()) {
+                $status = $row_each_status['StatusName'];
+                $count = $row_each_status['Total'];
+            ?>['<?= $status ?>', <?= $count ?>],
             <?php } ?>
         ]);
 
@@ -241,21 +330,12 @@
             [
                 'Product Name', 'Stock-Out', 'Balance'
             ],
-            [
-                '2014', 1000, 400
-            ],
-            [
-                '2015', 1170, 460
-            ],
-            [
-                '2016', 660, 1120
-            ],
-            [
-                '2017', 1030, 540
-            ],
-            [
-                '2018', 1030, 540
-            ],
+            <?php
+            $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Qty, COUNT(*) AS Count FROM invoice_detail OD
+                INNER JOIN product P ON P.ProductID = OD.ProductID GROUP BY OD.ProductID LIMIT 5");
+            while ($stock_row = $stock->fetch_assoc()) {
+            ?>['<?= $stock_row['ProductName'] ?>', <?= $stock_row['Count'] ?>, <?= $stock_row['Qty'] ?>],
+            <?php } ?>
 
         ]);
 
@@ -287,39 +367,12 @@
             [
                 'Product Name', 'Stock-Out', 'Balance'
             ],
-            [
-                '2014', 1000, 400
-            ],
-            [
-                '2015', 1170, 460
-            ],
-            [
-                '2016', 660, 1120
-            ],
-            [
-                '2017', 1030, 540
-            ],
-            [
-                '2018', 1030, 540
-            ],
-
-            [
-                '2019', 1030, 540
-            ],
-
-            [
-                '2020', 1030, 540
-            ],
-
-            [
-                '2021', 1030, 540
-            ],
-
-            [
-                '2022', 1030, 540
-            ],
-
-
+            <?php
+            $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Qty, SUM(Qty) AS Count FROM invoice_detail OD
+                INNER JOIN product P ON P.ProductID = OD.ProductID GROUP BY OD.ProductID");
+            while ($stock_row = $stock->fetch_assoc()) {
+            ?>['<?= $stock_row['ProductName'] ?>', <?= $stock_row['Count'] ?>, <?= $stock_row['Qty'] ?>],
+            <?php } ?>
 
         ]);
 
@@ -327,13 +380,15 @@
             chart: {
                 subtitle: 'The Statistic of each product stock'
             },
-            colors: ['crimson', 'green']
+            colors: ['crimson', 'green'],
         };
 
         var chart = new google.charts.Bar(document.getElementById('columnchart2'));
 
+        if (columnchart1 != null) {
+            columnchart1.destroyed
+        }
+
         chart.draw(data, google.charts.Bar.convertOptions(options));
     }
 </script>
-
-<script src="../../Action.js"></script>

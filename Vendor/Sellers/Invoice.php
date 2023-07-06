@@ -1,0 +1,146 @@
+<?php
+include('../../Connection/Connect.php');
+session_start();
+if ($_SESSION['StaffID']) {
+    echo '';
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../Mart_POS_System/Components/design.css">
+
+</head>
+<style>
+    .page {
+        width: 21cm;
+        min-height: 29.7cm;
+        padding: 1cm;
+        margin: 3cm auto;
+        border: 1px #D3D3D3 solid;
+        border-radius: 5px;
+        background: white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+    }
+
+    table thead td {
+        font-weight: bold;
+    }
+
+    body {
+        background-color: black !important;
+    }
+</style>
+
+<body>
+    <!-- <a href="../Sellers/Order.php" class="position-fixed">
+        <img src="../../Images/gobackicon.png" style="cursor: grab;" width="80px" height="80px">
+    </a> -->
+
+    <div class="d-flex overflow-hidden">
+        <?php
+        include('../Components/Sidebar.php');
+        ?>
+        <div class="main-content">
+            <?php
+            include('../Components/Navbar.php');
+            ?>
+
+            <?php
+            $staffID = $_SESSION['StaffID'];
+
+            $select = $con->query("SELECT O.InvoiceID, O.InvoiceDate, O.Seller FROM invoice O WHERE O.Seller = $staffID");
+            while ($row = $select->fetch_assoc()) {
+                $match = $row['InvoiceID'];
+            ?>
+                <div class="page">
+                    <div class="d-flex justify-content-between">
+                        <b class="fs-3">Invoice</b>
+                        <div class="d-flex text-end">
+                            <div class="d-flex flex-column">
+                                <b class="fs-4">Phoenix Super-Fresh</b>
+                                <b>#2370, Keo Chenda Street, Chhroy Changva Commune</b>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+
+                    <b class="fs-5">Invoice-ID: #<?= $match ?> </b> <br>
+                    <b class="fs-5">Order-Date: <?= $row['InvoiceDate'] ?> </b> <br><br>
+
+                    <b class="fs-3"> Order Summary * </b>
+                    <div class="table-responsive mt-5">
+                        <table class="table ">
+                            <thead align=center>
+                                <tr>
+                                    <td class="fs-5 text-left"> Name </td>
+                                    <td class="fs-5"> Qty </td>
+                                    <td class="fs-5"> Price </td>
+                                    <td class="fs-5 text-end"> Amount </td>
+                                </tr>
+                            </thead>
+
+                            <?php
+                            $pro_detail = $con->query("SELECT OD.ProductID, OD.Price, OD.Amount, OD.Price, OD.TotalCash, P.ProductID, P.ProductName FROM invoice_detail OD
+                                INNER JOIN product P ON OD.ProductID = P.ProductID WHERE OD.InvoiceID = $match");
+                            while ($detail = $pro_detail->fetch_assoc()) {
+                            ?>
+                                <tbody align=center style="line-height: 50px;">
+                                    <tr>
+                                        <td><?= $detail['ProductName'] ?></td>
+                                        <td><?= $detail['Amount'] ?></td>
+                                        <td>$ <?= number_format($detail['TotalCash'], 2) ?></td>
+                                        <td class="text-end"> $ <?= number_format($detail['TotalCash'], 2) ?></td>
+                                    </tr>
+                                </tbody>
+                            <?php } ?>
+
+
+                            <?php
+                            $pay_detail = $con->query("SELECT * FROM payment WHERE InvoiceID = $match");
+                            while ($payment = $pay_detail->fetch_assoc()) {
+                            ?>
+                                <tfoot style=" line-height: 50px">
+                                    <tr>
+                                        <?php
+                                        $count = $con->query("SELECT SUM(Amount) AS Count FROM invoice_detail WHERE InvoiceID = $match");
+                                        while ($qty = $count->fetch_assoc()) {
+                                        ?>
+                                            <td colspan="2" class="text-end fs-5"> <b>Total Order: <?= $qty['Count'] ?> </b> </td>
+
+                                        <?php } ?>
+                                        <td colspan="2" class="text-end fs-5">
+                                            <b>Sub Total: &nbsp; $ <?= number_format($payment['SubTotal'], 2) ?></b> <br>
+                                            <b>Grand Total: &nbsp; $ <?= number_format($payment['GrandTotal'], 2) ?></b>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            <?php } ?>
+
+                        </table>
+                    </div>
+
+
+                    <div class="text-center font-weight-bold mt-4 pt-3">
+                        <h5> Thank you for your shopping ! <br> Enjoy with your product ordering</h5> <br><br>
+
+                        <h5>Contact: 081 411 553 / 010 37 37 55 <br> Facebook: PhoenixShopping</h5>
+                    </div>
+                    <div align=center class="pt-3 w-25 mb-5" style="border-bottom: 4px solid black; margin-left: 38%;"></div>
+                </div>
+            <?php } ?>
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="../../../Mart_POS_System/Action.js"></script>

@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500;700&display=swap');
+
+.expired {
+    opacity: 0.6;
+}
+
+.sold-out {
+    border: 2px solid red;
+    border-radius: 15px;
+    opacity: 0.5;
+}
+
+.almost {
+    background-color: antiquewhite;
+    border: 2px solid antiquewhite;
+    border-radius: 15px;
+}
+
+.pro-item {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+@keyframes ldio-4guv2kbqa9d {
+    0%    { transform: translate(2px,2px) }
+   33.33% { transform: translate(102px,2px) }
+   66.66% { transform: translate(42px,102px) }
+  100%    { transform: translate(2px,2px) }
+}
+
+
+.ldio-4guv2kbqa9d > div {
+  transform: scale(0.8);
+  transform-origin: 100px 100px;
+}
+
+.ldio-4guv2kbqa9d > div > div {
+  animation: ldio-4guv2kbqa9d 1s linear infinite;
+  position: absolute
+}
+
+.ldio-4guv2kbqa9d > div > div div:nth-child(1) {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 12px solid #e90c59;
+  background: #46dff0
+}
+
+.ldio-4guv2kbqa9d > div > div div:nth-child(2) {
+  width: 17px;
+  height:  51px;
+  transform: rotate(-45deg);
+  background: #e90c59;
+  border-radius: 0 0 8px 8px;
+  position: absolute;
+  top: 68px;
+  left: 85px
+}
+.loadingio-spinner-magnify-dwv4kblnb9q {
+  width: 200px;
+  height: 200px;
+  display: inline-block;
+  overflow: hidden;
+  background: #ffffff;
+}
+.ldio-4guv2kbqa9d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0; /* see note above */
+}
+.ldio-4guv2kbqa9d div { box-sizing: content-box; }
+
+
+
+
+@keyframes ldio-clilj3a1frv {
+  0% {
+      opacity: 1
+  }
+
+  100% {
+      opacity: 0
+  }
+}
+
+.ldio-clilj3a1frv div {
+  left: 50%;
+  top: 48px;
+  position: absolute;
+  animation: ldio-clilj3a1frv linear 1.1764705882352942s infinite;
+  background: #fe718d;
+  width: 12px;
+  height: 24px;
+  border-radius: 6px / 12px;
+  transform-origin: 6px 60px;
+  margin: 0 auto;
+}
+
+.ldio-clilj3a1frv div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.0784313725490198s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -0.9803921568627452s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.8823529411764707s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.7843137254901962s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.6862745098039216s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.5882352941176471s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.4901960784313726s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.3921568627450981s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.29411764705882354s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.19607843137254904s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.09803921568627452s;
+  background: #fe718d;
+}
+
+.ldio-clilj3a1frv div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+  background: #fe718d;
+}
+
+.loadingio-spinner-spinner-qn1vzcvkchk {
+  width: 200px;
+  height: 200px;
+  display: inline-block;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.ldio-clilj3a1frv {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0;
+  /* see note above */
+}
+
+.ldio-clilj3a1frv div {
+  box-sizing: content-box;
+}

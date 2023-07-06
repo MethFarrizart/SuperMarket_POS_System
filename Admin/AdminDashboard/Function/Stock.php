@@ -27,16 +27,24 @@
                         </tr>
                     </thead>
 
-                    <tbody class="text-center h6" style="line-height: 50px;">
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                        
-                    </tbody>
+                    <?php
+                    $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Image, P.Qty, SUM(Qty) AS Count FROM invoice_detail OD
+                        INNER JOIN product P ON P.ProductID = OD.ProductID GROUP BY OD.ProductID");
+                    while ($stock_row = $stock->fetch_assoc()) {
+                    ?>
+                        <tbody class="text-center h6" style="line-height: 50px;">
+                            <tr>
+                                <td><?= $stock_row['ProductID'] ?></td>
+                                <td><?= $stock_row['ProductName'] ?></td>
+                                <td><?= $stock_row['Count'] ?> Items</td>
+                                <td><?= $stock_row['Qty'] ?> Items</td>
+                                <td><img src="../AdminDashboard/Images/<?= $stock_row['Image'] ?>" width="50px" height="50px" alt=""> </td>
+                            </tr>
+
+                        </tbody>
+
+                    <?php } ?>
+
                 </table>
             </div>
         </div>

@@ -30,7 +30,7 @@
                     </thead>
 
                     <?php
-                    $qry_cate = $con->query("SELECT * FROM category");
+                    $qry_cate = $con->query("SELECT * FROM category ORDER BY CategoryID DESC");
                     while ($cate_row = $qry_cate->fetch_assoc()) {
                     ?>
                         <tbody>
@@ -43,7 +43,7 @@
                                         Edit
                                     </button>
 
-                                    <button type="button" class="btn text-white px-4 p-2 " style="background-color: red;" data-bs-toggle="offcanvas" data-bs-target="#deletecate-<?= $cate_row['CategoryID'] ?>" aria-controls="deletecate">
+                                    <button type="button" class="btn text-white px-4 p-2 " style="background-color: red;" data-bs-toggle="modal" data-bs-target="#deletecate-<?= $cate_row['CategoryID'] ?>" aria-controls="deletecate">
                                         <i class="fa-sharp fa-solid fa-trash" style="color: yellow;"></i>
                                         Delete
                                     </button>
@@ -52,34 +52,40 @@
                         </tbody>
 
                         <!-- Delete Category -->
-                        <div class="offcanvas offcanvas-top w-100" tabindex="-1" id="deletecate-<?= $cate_row['CategoryID'] ?>" aria-labelledby="deleteLabel">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="deleteLabel">Delete Category</h5>
-                                <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="offcanvas" aria-label="Close" style="cursor: grab;">
-                            </div>
-                            <div class="offcanvas-body bg-warning">
-                                <form action="" method="get">
-                                    <h3> Are You Sure?</h3>
-
-                                    <div class="col-12">
-                                        <input type="text" class="form-control" name="del_cateid" value="<?= $cate_row['CategoryID'] ?>" readonly>
+                        <!-- Delete Staff -->
+                        <div class="modal fade" id="deletecate-<?= $cate_row['CategoryID'] ?>" tabindex="-1" role="dialog" aria-labelledby="deleteLabelLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color:crimson">
+                                        <h3 class="modal-title text-warning" id="deleteLabelLabel">Are You Sure?</h3>
+                                        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="modal" aria-label="Close" style="cursor: grab;">
                                     </div>
+                                    <div class="modal-body">
+                                        <form action="" method="get">
+                                            <p class="mt-5 text-center"> Do you want to delete this Category as <?= '"' . $cate_row['CategoryName'] . '"' ?></p>
 
-                                    <div class="modal-footer mt-5">
-                                        <button type="submit" class="btn btn-danger" name="delete_cate">Delete</button>
+                                            <div class="col-12">
+                                                <input type="hidden" class="form-control" name="del_cateid" value="<?= $cate_row['CategoryID'] ?>" readonly>
+                                            </div>
+
+                                            <div class="modal-footer mt-5">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Leave</button>
+                                                <button type="submit" name="delete_cate" class="btn btn-outline-danger">Delete</button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
 
 
                         <!-- Update Category -->
-                        <div class="offcanvas offcanvas-end w-25" tabindex="-1" id="editcate-<?= $cate_row['CategoryID'] ?>" aria-labelledby="editLabel">
+                        <div class="offcanvas offcanvas-end w-25 h-50" tabindex="-1" id="editcate-<?= $cate_row['CategoryID'] ?>" aria-labelledby="editLabel" style="background:linear-gradient(rgb(8, 234, 234), dodgerblue, rgb(13, 13, 183));">
                             <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="editLabel">Update Category</h5>
+                                <h3 class="offcanvas-title text-white" id="editLabel">Update Category</h3>
                                 <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="offcanvas" aria-label="Close" style="cursor: grab;">
                             </div>
-                            <div class="offcanvas-body bg-primary">
+                            <div class="offcanvas-body mt-3">
                                 <form action="" method="post" enctype="multipart/form-data">
                                     <div class="row gap-4">
                                         <div class="col-12">
@@ -94,7 +100,7 @@
 
                                     </div>
 
-                                    <div class="modal-footer mt-5 gap-2">
+                                    <div class="modal-footer mt-5 gap-2 pt-3" style="border-top: 1px solid white;">
                                         <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas">Leave</button>
                                         <button type="submit" name="upd_cate" class="btn btn-success">Update</button>
                                     </div>

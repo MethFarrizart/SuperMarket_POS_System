@@ -61,7 +61,6 @@ if (isset($_POST['submit'])) {
     $address = $_POST['address'];
 
     $pos = $_POST['pos'];
-    $work = $_POST['work'];
 
     $photo = addslashes($_FILES['photo']['tmp_name']);
     $photo = file_get_contents($photo);
@@ -80,10 +79,9 @@ if (isset($_POST['submit'])) {
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>';
     } else {
-        $ins_emp = "INSERT INTO `staff`(`FirstName`, `LastName`, `Gender`, `PositionID`, `DOB`, `Address`, `Contact`, `Email`, `Photo`, `UserName`, `Password`, `WorkOn`) 
-                    VALUES('$fname', '$lname', '$gender', '$pos', '$dob', '$address', '$phone', '$email', '$photo', '$username', '$password', '$work') ";
+        $ins_emp = "INSERT INTO `staff`(`FirstName`, `LastName`, `Gender`, `PositionID`, `DOB`, `Address`, `Contact`, `Email`, `Photo`, `UserName`, `Password`) 
+                    VALUES('$fname', '$lname', '$gender', '$pos', '$dob', '$address', '$phone', '$email', '$photo', '$username', '$password') ";
 
-        $con->query($ins_emp);
         $result = $con->query($ins_emp);
         if ($result === true) {
             $session_caught = "SELECT * FROM `staff`";
@@ -98,7 +96,9 @@ if (isset($_POST['submit'])) {
                     if ($row['PositionID'] == 89) {
                         header('location: ./Admin/AdminDashboard/Dashboard.php ');
                     } else if ($row['PositionID'] == 90) {
-                        header('location: ./Seller/accountant.php ');
+                        header('location: ./Vendor/Sellers/Order.php');
+                    } else {
+                        echo 'Success';
                     }
                 }
             }
@@ -175,14 +175,6 @@ if (isset($_POST['submit'])) {
                 <div class="d-flex flex-row gap-4 pt-4">
                     <input type="email" class="form-control" placeholder="Email" name="email">
                 </div>
-
-                <div class="gap-5 pt-4">
-                    <label style="font-weight: bold;" class="control-label text-white">Work On</label>
-                    <div class="d-flex flex-row gap-4 pt-2">
-                        <input type="date" class="form-control" name="work">
-                    </div>
-                </div>
-
 
                 <div class="d-flex flex-row gap-4 pt-4">
                     <div style="color: white; font-weight: bold; padding-top: 5px;" required> Photo</div>

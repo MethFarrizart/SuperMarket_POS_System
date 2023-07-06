@@ -1,6 +1,5 @@
 <?php
 include('../../Connection/Connect.php');
-
 ?>
 
 <!DOCTYPE html>
@@ -10,22 +9,10 @@ include('../../Connection/Connect.php');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title> Phoenix Super-Fresh</title>
+    <link rel="stylesheet" href="../../../Mart_POS_System/Components/design.css">
+    <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
 </head>
-
-<style>
-    .border-all {
-        border-radius: 20px;
-        background: linear-gradient(to right, rgb(54, 54, 175), rgb(35, 224, 224));
-        height: 100%;
-    }
-
-    .other-border {
-        border-radius: 50px;
-        background-color: #1d4597;
-        border: 4px solid #77FF54;
-    }
-</style>
 
 <body>
     <div class="overflow-hidden d-flex">
@@ -39,6 +26,7 @@ include('../../Connection/Connect.php');
             <div class="container-fluid">
 
                 <div class="d-flex justify-content-between">
+
                     <div class="h4 " style="margin-top: 120px;">
                         Statistic Summary Detail
                     </div>
@@ -47,7 +35,7 @@ include('../../Connection/Connect.php');
                     <div class="text-end text-secondary" style="margin-top: 120px;">
                         Last Seen:
                         <?php
-                        $date1 = date_create('2023-06-14'); //old
+                        $date1 = date_create('2023-06-15'); //old
                         $date2 = date_create(date('Y-m-d')); //new
                         $diff = date_diff($date1, $date2);
 
@@ -55,8 +43,18 @@ include('../../Connection/Connect.php');
                         ?>
                     </div>
                 </div>
-
+                <!-- Digital Clock -->
+                <div class="text-center" style="margin-bottom: 20px">
+                    <strong class="fs-4" id="day"></strong> <strong>/</strong>
+                    <strong class="fs-4" id="month"></strong> <strong>/</strong>
+                    <!-- <strong class="fs-4" id="nth"></strong> <sup><b id="th"></b></sup> <strong>/</strong> -->
+                    <strong class="fs-4" id="year"></strong> <strong class="fs-4">~</strong>
+                    <strong class="fs-4" id="hrs"></strong> <strong class="fs-4">:</strong>
+                    <strong class="fs-4" id="min"></strong> <strong class="fs-4">:</strong>
+                    <strong class="fs-4" id="sec"></strong> <strong class="fs-4" id="time"></strong>
+                </div>
                 <hr>
+
 
                 <div class="row">
                     <div class="col-8">
@@ -67,15 +65,35 @@ include('../../Connection/Connect.php');
                                 <img src="../../Images/up.png" alt="">
                                 <h4 class="pt-3 text-white ">
                                     Total Sales:
-                                    <!-- Dynamic-->
-                                    Times
+                                    <?php
+                                    $sell_total = $con->query("SELECT * FROM invoice");
+                                    $total = mysqli_num_rows($sell_total);
+                                    if ($total > 0) {
+                                    ?>
+                                        <h4 class="pt-3 text-white mx-5">
+                                            <?= $total ?>
+                                            <span class="mx-1"> Times</span>
+                                        </h4>
+
+                                    <?php } ?>
+
                                 </h4>
                             </div>
                             <div class="other-border d-flex gap-3 p-2 ps-3">
                                 <img src="../../Images/income.png" alt="">
                                 <h4 class="pt-3 text-white ">
-                                    Total Incomes: $
-                                    <!-- Dynamic-->
+                                    Total Incomes:
+                                    <?php
+                                    $income = $con->query("SELECT SUM(GrandTotal) AS grandTotal FROM payment");
+                                    while ($incomeTotal = $income->fetch_assoc()) {
+                                        $result = $incomeTotal['grandTotal']
+                                    ?>
+                                        <h4 class="pt-3 text-white">
+                                            &nbsp;&nbsp;&nbsp; $<?= ' ' . number_format($result, 2)  ?>
+                                        </h4>
+
+                                    <?php  } ?>
+
                                 </h4>
                             </div>
                         </div>
@@ -135,8 +153,8 @@ include('../../Connection/Connect.php');
                                 $sum_pro = $con->query("SELECT SUM(Qty) AS Qty FROM product");
                                 while ($row_sum = $sum_pro->fetch_assoc()) {
                                 ?>
-                                    <h4 class="pt-3 text-white" >
-                                        Total Stock-IN: &nbsp;&nbsp; <span class="mx-5"> <?= $row_sum['Qty'] ?> </span>
+                                    <h4 class="pt-3 text-white" data-count="<?= $row_sum['Qty'] ?>">
+                                        Total Stock-IN: &nbsp;&nbsp; <span class="mx-5"> </span>
                                     </h4>
                                 <?php } ?>
                             </div>
@@ -150,8 +168,8 @@ include('../../Connection/Connect.php');
                                 $sum_proExpired = $con->query("SELECT SUM(Qty) AS Qty FROM product WHERE StatusID = 4");
                                 while ($row_sum = $sum_proExpired->fetch_assoc()) {
                                 ?>
-                                    <h4 class="pt-3 text-white">
-                                        Expired Product: <span class="mx-5"> <?= $row_sum['Qty'] ?> </span>
+                                    <h4 class="pt-3 text-white" data-count="<?= $row_sum['Qty'] ?>">
+                                        Expired Product: <span class=" mx-5"> </span>
                                     </h4>
                                 <?php } ?>
                             </div>
@@ -160,8 +178,10 @@ include('../../Connection/Connect.php');
                             <div class="other-border d-flex gap-3 p-2 ps-3" style="border-radius: 20px;">
                                 <img src="../../Images/topsale.png" alt="">
                                 <h4 class="pt-3 text-white ">
-                                    Top Sale:
-                                    <!-- Dynamic-->
+                                    Top Sale: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <h4 class="pt-3 text-white mx-4" data-count="5">
+                                        <span class="mx-5"> 0 </span>
+                                    </h4>
                                 </h4>
                             </div>
                             <div class="other-border d-flex gap-3 p-2 ps-3" style="border-radius: 20px;">
@@ -193,37 +213,57 @@ include('../../Connection/Connect.php');
                             <table class="table table-hover">
                                 <thead>
                                     <tr class="mt-4 text-white text-center h5" style="background-color: #198531; line-height: 50px;">
-                                        <td>
-                                            ProductID</td>
-                                        <td>
-                                            Product Name</td>
-                                        <td>
-                                            Qty Sold-Out</td>
-                                        <td>
-                                            Remaining Stock</td>
-                                        <td>
-                                            Image
-                                        </td>
+                                        <td>ProductID</td>
+                                        <td> Product Name</td>
+                                        <td> Qty in Stock</td>
+                                        <td> Image </td>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <tr class="text-center h6" style="line-height: 50px;">
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                    </tr>
+                                    <?php
+                                    $top_pro = $con->query("SELECT DISTINCT OD.ProductID, p.ProductID, p.Image, p.Qty, p.ProductName, COUNT(*) AS Amount FROM invoice_detail OD 
+                                            INNER JOIN Product p ON p.ProductID = OD.ProductID GROUP BY p.ProductID 
+                                            HAVING Amount > 10
+                                            ORDER BY Amount DESC LIMIT 5");
+                                    if (mysqli_num_rows($top_pro) > 0) {
+                                        while ($top_pro_row = $top_pro->fetch_assoc()) {
+                                    ?>
+                                            <tr class="text-center h6" style="line-height: 50px;">
+                                                <td><?= $top_pro_row['ProductID'] ?></td>
+                                                <td><?= $top_pro_row['ProductName'] ?></td>
+                                                <td><?= $top_pro_row['Qty'] ?></td>
+                                                <td><img src="../AdminDashboard/Images/<?= $top_pro_row['Image'] ?>" width="50" height="50" alt=""></td>
+                                            </tr>
+
+                                        <?php }
+                                    } else { ?>
+                                        <tr>
+                                            <td colspan="4" align=center>
+                                                <div class="d-flex gap-3 mt-5 justify-content-center">
+                                                    <div class="lds-ellipsis">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                    <h4><i>Nothing ...! </i></h4>
+                                                    <div class="lds-ellipsis">
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                        <div></div>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    <?php }
+                                    ?>
 
                                 </tbody>
 
                             </table>
-                            <div class="fs-5 p-2 mb-0" style="float: right;">
-                                <a href="#topsale" data-bs-toggle="offcanvas" aria-controls="topsale">
-                                    <i class="fa-sharp fa-solid fa-eye"></i>
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -263,10 +303,8 @@ include('../../Connection/Connect.php');
                                             <td> <?= $row_proExpire['Qty'] ?></td>
                                             <td> <img src="../../Images/<?php echo $row_proExpire['Image'] ?>" width="50px" height="50px" alt=""> </td>
                                         </tr>
-
                                     <?php } ?>
                                 </tbody>
-
                             </table>
                             <div class="fs-5 p-2 mb-0" style="float: right;">
                                 <a href="#expired" data-bs-toggle="offcanvas" aria-controls="expired">
@@ -302,13 +340,17 @@ include('../../Connection/Connect.php');
                                 </thead>
 
                                 <tbody>
-                                    <tr class="text-center h6" style="line-height: 50px;">
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                    </tr>
-
+                                    <?php
+                                    $never = $con->query("SELECT * FROM product WHERE StatusID NOT IN (2) AND ProductID NOT IN(SELECT ProductID FROM invoice_detail) LIMIT 5 ");
+                                    while ($never_row = $never->fetch_assoc()) {
+                                    ?>
+                                        <tr class="text-center h6" style="line-height: 50px;">
+                                            <td><?= $never_row['ProductID'] ?> </td>
+                                            <td><?= $never_row['ProductName'] ?> </td>
+                                            <td><?= $never_row['Qty'] ?> </td>
+                                            <td> <img src="../AdminDashboard/Images/<?= $never_row['Image'] ?>" width="50px" height="50px" alt=""> </td>
+                                        </tr>
+                                    <?php } ?>
                                 </tbody>
 
                             </table>
@@ -322,62 +364,7 @@ include('../../Connection/Connect.php');
                 </div>
             </div>
         </div>
-
-
     </div>
-
-
-
-
-
-    <!-- offcanvas top sale -->
-    <div class="offcanvas offcanvas-start w-100" tabindex="-1" id="topsale" aria-labelledby="topsaleLabel" style="transition: 0.8s ease;">
-        <div class="offcanvas-header">
-            <img data-bs-dismiss="offcanvas" aria-label="Close" src="../../Images/gobackicon.png" style="cursor: grab;" width="80px" height="80px">
-        </div>
-        <div class="offcanvas-body">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="bg-white p-4 pb-5" style="border-radius: 20px;">
-                            <p class="fs-4">
-                                Top Selling Product
-                            </p>
-
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr class="mt-4 text-white text-center h5" style="background-color: #198531; line-height: 50px;">
-                                        <td>
-                                            ProductID</td>
-                                        <td>
-                                            Product Name</td>
-                                        <td>
-                                            Qty Sold-Out</td>
-                                        <td>
-                                            Remaining Stock</td>
-                                        <td>
-                                            Image
-                                        </td>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr class="text-center h6" style="line-height: 50px;">
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <!-- offcanvas Expired product -->
     <div class="offcanvas offcanvas-start w-100" tabindex="-1" id="expired" aria-labelledby="expiredLabel" style="transition: 0.8s ease;">
@@ -460,13 +447,17 @@ include('../../Connection/Connect.php');
                             </thead>
 
                             <tbody>
-                                <tr class="text-center h6" style="line-height: 50px;">
-                                    <td>1</td>
-                                    <td>1</td>
-                                    <td>1</td>
-                                    <td>1</td>
-                                </tr>
-
+                                <?php
+                                $never = $con->query("SELECT * FROM product WHERE StatusID NOT IN (2) AND ProductID NOT IN(SELECT ProductID FROM invoice_detail) ");
+                                while ($never_row = $never->fetch_assoc()) {
+                                ?>
+                                    <tr class="text-center h6" style="line-height: 50px;">
+                                        <td><?= $never_row['ProductID'] ?> </td>
+                                        <td><?= $never_row['ProductName'] ?> </td>
+                                        <td><?= $never_row['Qty'] ?> </td>
+                                        <td> <img src="../AdminDashboard/Images/<?= $never_row['Image'] ?>" width="50px" height="50px" alt=""> </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
 
                         </table>
@@ -479,31 +470,10 @@ include('../../Connection/Connect.php');
 
 </html>
 
-<script src="../../Action.js"></script>
+<script src="../../../Mart_POS_System/Action.js"></script>
 
 <!-- Google-Chartjs -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-<!-- Animation Number Count -->
-<script>
-    $(document).ready(function() {
-        $('h4 span').each(function() {
-            const This = $(this);
-            $({
-                Count: This.text()
-            }).animate({
-                Count: This.parent().attr('data-count')
-            }, {
-                duration: 2000,
-                easing: "linear",
-
-                step: function() {
-                    This.text(Math.round(this.Count))
-                }
-            })
-        })
-    })
-</script>
 
 
 
@@ -514,17 +484,18 @@ include('../../Connection/Connect.php');
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Year', 'Sales'],
-            ['2004', 500],
-            ['2005', 1170],
-            ['2006', 660],
-            ['2007', 1030],
-            ['2007', 2030],
-            ['2007', 3030],
-            ['2007', 2000],
-            ['2007', 5030],
-            ['2007', 1030]
+        var datas = google.visualization.arrayToDataTable([
+            ['Year', 'Day Income From Sale'],
+            <?php
+            $select = $con->query("SELECT O.InvoiceID, Date_Format(O.InvoiceDate, '%D') AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
+            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY Day");
+
+            while ($select_row = $select->fetch_assoc()) {
+                $day = $select_row['Day'];
+                $total = $select_row['Total'];
+            ?>['<?= $day ?>', <?= $total ?>],
+
+            <?php  } ?>
         ]);
 
         var options = {
@@ -538,6 +509,6 @@ include('../../Connection/Connect.php');
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-        chart.draw(data, options);
+        chart.draw(datas, options);
     }
 </script>

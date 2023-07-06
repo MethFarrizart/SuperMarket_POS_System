@@ -63,7 +63,8 @@ if (isset($_GET['delete'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title> Phoenix Super-Fresh</title>
+    <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
     <link rel="stylesheet" href="Css/Inventory.css">
 </head>
 
@@ -91,13 +92,13 @@ if (isset($_GET['delete'])) {
             ?>
 
             <div class="page">
-                <div class="d-flex justify-content-between" style="margin-top: 10px;">
+                <!-- <div class="d-flex justify-content-between" style="margin-top: 10px;">
                     <input type="text" class="form-control search w-50" placeholder="Search..." style="border-radius: 50px;">
                     <select class="custom-select mt-1" style="width: 150px; height: 50px; border: none; box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); border-radius: 10px;">
                         <option selected disabled>Status</option>
                         <option value=" "></option>
                     </select>
-                </div>
+                </div> -->
                 <div class="row mt-3">
                     <div class="col-12">
                         <div class="">
@@ -167,7 +168,7 @@ if (isset($_GET['delete'])) {
                                                         </div>
 
                                                         <div class="modal-footer mt-5">
-                                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Leave</button>
+                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Leave</button>
                                                             <button type="submit" name="delete" class="btn btn-outline-danger">Delete</button>
                                                         </div>
                                                     </form>
@@ -250,7 +251,7 @@ if (isset($_GET['delete'])) {
 
                                                     <div class="col-12">
                                                         <label class="control-label">Work On: </label>
-                                                        <input type="date" value="<?= $row['WorkOn'] ?>" class="form-control" readonly>
+                                                        <input type="datetime" value="<?= $row['WorkOn'] ?>" class="form-control" readonly>
                                                     </div>
 
                                                     <div class="col-12">

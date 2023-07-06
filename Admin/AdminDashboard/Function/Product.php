@@ -3,6 +3,17 @@
         <input type="text" class="form-control p-3 search" placeholder="Search..." id="search_pro" style="border-radius:15px;">
     </div>
 
+    <!-- Digital Clock -->
+    <div class="text-end">
+        <strong class="fs-5" id="day"></strong> <strong>/</strong>
+        <strong class="fs-5" id="month"></strong> <strong>/</strong>
+        <!-- <strong class="fs-5" id="nth"></strong> <sup><b id="th"></b></sup> <strong>/</strong> -->
+        <strong class="fs-5" id="year"></strong> <strong class="fs-5">~</strong>
+        <strong class="fs-5" id="hrs"></strong> <strong class="fs-5">:</strong>
+        <strong class="fs-5" id="min"></strong> <strong class="fs-5">:</strong>
+        <strong class="fs-5" id="sec"></strong> <strong class="fs-5" id="time"></strong>
+    </div>
+
     <div class="row mt-3">
         <div class="col-12">
             <div class="bg-white p-4 shadow border" style="border-radius: 20px;">
@@ -112,7 +123,6 @@
                                     <?php } ?>
 
                                 <?php } else { ?>
-
                                     <?php
                                     if ($pro_row['Qty'] == 0) {
                                     ?>
@@ -179,7 +189,7 @@
                                             </div>
 
                                             <div class="modal-footer mt-5">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Leave</button>
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Leave</button>
                                                 <button type="submit" name="delete_pro" class="btn btn-outline-danger">Delete</button>
                                             </div>
                                         </form>
@@ -207,17 +217,25 @@
                                             <input type="text" name="upd_proname" value="<?= $pro_row['ProductName'] ?>" class="form-control">
                                         </div>
 
-                                        <div class="col-12">
-                                            <label for="" class="control-label">Category Type: </label>
-                                            <select class="custom-select w-100 p-2" name="upd_procate" required>
-                                                <?php
-                                                $qry = $con->query("SELECT * FROM category ORDER BY CategoryID");
-                                                while ($cate = $qry->fetch_assoc()) {
-                                                ?>
-                                                    <option value="<?php echo $cate['CategoryID'] ?>"><?php echo $cate['CategoryName'] ?></option>
-                                                <?php } ?>
-                                            </select>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label for="" class="control-label">Category: </label>
+                                                <input type="text" value="<?= $pro_row['CategoryName'] ?>" class="form-control">
+                                            </div>
+
+                                            <div class="col-6">
+                                                <label for="" class="control-label">Update Category: </label>
+                                                <select class="custom-select w-100 p-2" name="upd_procate">
+                                                    <?php
+                                                    $qry = $con->query("SELECT * FROM category ORDER BY CategoryID");
+                                                    while ($cate = $qry->fetch_assoc()) {
+                                                    ?>
+                                                        <option value="<?= $cate['CategoryID'] ?>"><?= $cate['CategoryName'] ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
                                         </div>
+
 
                                         <div class="col-12">
                                             <label for="" class="control-label">Quantity: </label>
@@ -226,12 +244,12 @@
 
                                         <div class="col-12">
                                             <label for="" class="control-label">UnitPrice: </label>
-                                            <input type="number" name="upd_price" value="<?= $pro_row['Price'] ?>" class="form-control">
+                                            <input type="text" name="upd_price" value="<?= $pro_row['Price'] ?>" class="form-control">
                                         </div>
 
                                         <div class="col-12">
                                             <label for="" class="control-label">Import On: </label>
-                                            <input type="datetime-local" name="upd_date" value="<?= $pro_row['Import_On'] ?>" class="form-control">
+                                            <input type="datetime" value="<?= $pro_row['Import_On'] ?>" class="form-control" readonly>
                                         </div>
 
                                         <div class="col-12">
@@ -247,7 +265,7 @@
 
                                         <div class="col-12">
                                             <label for="" class="control-label">Image: </label>
-                                            <input type="file" name="upd_proimg" value="<?= $pro_row['Image'] ?>" class="form-control"> <br>
+                                            <input type="file" name="upd_proimg" class="form-control"> <br>
                                             <img src="../../Images/<?php echo $pro_row['Image'] ?>" width="100px" height="100px" alt="">
                                         </div>
 
@@ -267,6 +285,8 @@
                         </div>
                     <?php } ?>
                 </table>
+
+
 
                 <div class="d-flex justify-content-between">
 
@@ -299,7 +319,7 @@
                     <div class="mt-5" style="color: grey">
                         Last Seen:
                         <?php
-                        $date1 = date_create('2023-06-14'); //old
+                        $date1 = date_create('2023-06-15'); //old
                         $date2 = date_create(date('Y-m-d')); //new
                         $diff = date_diff($date1, $date2);
 
@@ -350,17 +370,12 @@
 
                         <div class="col-12">
                             <label for="" class="control-label">Unit Price:</label>
-                            <input type="number" name="pro_price" class="form-control">
-                        </div>
-
-                        <div class="col-12">
-                            <label for="" class="control-label">Purchased On:</label>
-                            <input type="datetime-local" name="pro_date" class="form-control">
+                            <input type="text" name="pro_price" class="form-control">
                         </div>
 
                         <div class="col-12">
                             <label for="" class="control-label">Expired On:</label>
-                            <input type="date" name="pro_expired" class="form-control" id="expired">
+                            <input type="date" name="pro_expired" class="form-control expired">
                         </div>
 
 

@@ -8,7 +8,7 @@ if (isset($_POST['add_pro'])) {
     $pro_cate       = $_POST['pro_cate'];
     $pro_qty        = $_POST['pro_qty'];
     $pro_price      = $_POST['pro_price'];
-    $pro_date       = $_POST['pro_date'];
+    $pro_date       = date("Y-m-d H:i:s A");
     $pro_expired    = $_POST['pro_expired'];
     $pro_descr      = $_POST['pro_descr'];
 
@@ -60,7 +60,6 @@ if (isset($_POST['upd_pro'])) {
     $upd_procate = $_POST['upd_procate'];
     $upd_qty = $_POST['upd_qty'];
     $upd_price = $_POST['upd_price'];
-    $upd_date = $_POST['upd_date'];
     $upd_expired = $_POST['upd_expired'];
     $upd_prostatus = $_POST['upd_prostatus'];
     $upd_prodescr = $_POST['upd_prodescr'];
@@ -68,7 +67,7 @@ if (isset($_POST['upd_pro'])) {
 
     $upd_proimg    = isset($_FILES['upd_proimg']['name']) ? $_FILES['upd_proimg']['name'] : '';
     $upd_tmpimg    = $_FILES['upd_proimg']['tmp_name'];
-    $path_imgs   = "../../Images/";
+    $path_imgs     = "../../Images/";
     move_uploaded_file($upd_tmpimg, $path_imgs . $upd_proimg);
 
     $upd_product = " UPDATE `product` SET 
@@ -77,7 +76,6 @@ if (isset($_POST['upd_pro'])) {
                             `Qty`='$upd_qty',
                             `Price`='$upd_price',
                             `Image`='$upd_proimg',
-                            `Import_On`='$upd_date',
                             `Expired_On`='$upd_expired',
                             `StatusID`='$upd_prostatus',
                             `Description`='$upd_prodescr'
@@ -112,8 +110,8 @@ if (isset($_GET['delete_cate'])) {
     $con->query($del_cate);
 
 ?>
-    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; top: 0; border-radius: 0; z-index: 3; position: fixed; width:100%">
-        <h5 class="pt-3 text-white"> This Category <?php echo $id ?> has deleted</h5>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%">
+        <h5 class="pt-3 text-white"> This Category on ID = <?php echo $id ?> has deleted</h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -137,7 +135,8 @@ if (isset($_POST['upd_cate'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title> Phoenix Super-Fresh</title>
+    <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
     <link rel="stylesheet" href="Css/Inventory.css">
 </head>
 <style>
@@ -198,20 +197,80 @@ if (isset($_POST['upd_cate'])) {
 
 </html>
 
-<script src="../../Action.js"></script>
+<script src="../../../Mart_POS_System/Action.js"></script>
 
 
 <script>
     $(document).ready(function() {
+        // Check Expire Date
+        $('.expired').change(function() {
+            var new_date = new Date();
+            var get_date = new Date($(this).val());
+            var get = $('.qty').val();
 
+            if (new_date >= get_date) {
+                <?php
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 4");
+                while ($row = $select->fetch_assoc()) {
+                    $statusid = $row['StatusID'];
+                    $statusName = $row['StatusName'];
+                }
+                ?>
+                $('.statusID').val("<?php echo $statusid ?>");
+                $('.statusName').val("<?php echo $statusName ?>");
+            } else {
+
+                // Available
+                if (get > 5) {
+                    <?php
+                    $select = $con->query("SELECT * FROM Status WHERE StatusID = 1");
+                    while ($row = $select->fetch_assoc()) {
+                        $statusid = $row['StatusID'];
+                        $statusName = $row['StatusName'];
+                    }
+                    ?>
+                    $('.statusID').val("<?php echo $statusid ?>");
+                    $('.statusName').val("<?php echo $statusName ?>");
+                }
+
+                // Almost 
+                else if (get >= 1 && get <= 5) {
+                    <?php
+                    $select = $con->query("SELECT * FROM Status WHERE StatusID = 2");
+                    while ($row = $select->fetch_assoc()) {
+                        $statusid = $row['StatusID'];
+                        $statusName = $row['StatusName'];
+                    }
+                    ?>
+                    $('.statusID').val("<?php echo $statusid ?>");
+                    $('.statusName').val("<?php echo $statusName ?>");
+                }
+
+                // Sold Out
+                else if (get == 0 || get == null) {
+                    <?php
+                    $select = $con->query("SELECT * FROM Status WHERE StatusID = 3");
+                    while ($row = $select->fetch_assoc()) {
+                        $statusid = $row['StatusID'];
+                        $statusName = $row['StatusName'];
+                    }
+                    ?>
+                    $('.statusID').val("<?php echo $statusid ?>");
+                    $('.statusName').val("<?php echo $statusName ?>");
+                }
+            }
+        })
+
+
+        // Check status
         // Use keyup function
         $('.qty').keyup(function() {
             var get = $(this).val();
 
-            // Almost
-            if (get <= 5) {
+            // Available
+            if (get > 5) {
                 <?php
-                $select = $con->query("SELECT p.StatusID, s.StatusID, s.StatusName FROM product p INNER JOIN status s ON s.StatusID = p.StatusID WHERE s.StatusID = 2");
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 1");
                 while ($row = $select->fetch_assoc()) {
                     $statusid = $row['StatusID'];
                     $statusName = $row['StatusName'];
@@ -221,10 +280,23 @@ if (isset($_POST['upd_cate'])) {
                 $('.statusName').val("<?php echo $statusName ?>");
             }
 
-            // Available
-            else if (get > 0) {
+            // Almost 
+            else if (get >= 1 && get <= 5) {
                 <?php
-                $select = $con->query("SELECT p.StatusID, s.StatusID, s.StatusName FROM product p INNER JOIN status s ON s.StatusID = p.StatusID WHERE s.StatusID = 1");
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 2");
+                while ($row = $select->fetch_assoc()) {
+                    $statusid = $row['StatusID'];
+                    $statusName = $row['StatusName'];
+                }
+                ?>
+                $('.statusID').val("<?php echo $statusid ?>");
+                $('.statusName').val("<?php echo $statusName ?>");
+            }
+
+            // Sold Out
+            else if (get == 0 || get == null) {
+                <?php
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 3");
                 while ($row = $select->fetch_assoc()) {
                     $statusid = $row['StatusID'];
                     $statusName = $row['StatusName'];
@@ -234,16 +306,17 @@ if (isset($_POST['upd_cate'])) {
                 $('.statusName').val("<?php echo $statusName ?>");
             }
         })
+
 
 
         // Use change function
         $('.qty').change(function() {
             var get = $(this).val();
 
-            // Almost
-            if (get <= 5) {
+            // Available
+            if (get > 5) {
                 <?php
-                $select = $con->query("SELECT p.StatusID, s.StatusID, s.StatusName FROM product p INNER JOIN status s ON s.StatusID = p.StatusID WHERE s.StatusID = 2");
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 1");
                 while ($row = $select->fetch_assoc()) {
                     $statusid = $row['StatusID'];
                     $statusName = $row['StatusName'];
@@ -253,10 +326,23 @@ if (isset($_POST['upd_cate'])) {
                 $('.statusName').val("<?php echo $statusName ?>");
             }
 
-            // Available
-            else if (get > 0) {
+            // Almost 
+            else if (get >= 1 && get <= 5) {
                 <?php
-                $select = $con->query("SELECT p.StatusID, s.StatusID, s.StatusName FROM product p INNER JOIN status s ON s.StatusID = p.StatusID WHERE s.StatusID = 1");
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 2");
+                while ($row = $select->fetch_assoc()) {
+                    $statusid = $row['StatusID'];
+                    $statusName = $row['StatusName'];
+                }
+                ?>
+                $('.statusID').val("<?php echo $statusid ?>");
+                $('.statusName').val("<?php echo $statusName ?>");
+            }
+
+            // Sold Out
+            else if (get == 0 || get == null) {
+                <?php
+                $select = $con->query("SELECT * FROM Status WHERE StatusID = 3");
                 while ($row = $select->fetch_assoc()) {
                     $statusid = $row['StatusID'];
                     $statusName = $row['StatusName'];
@@ -268,6 +354,8 @@ if (isset($_POST['upd_cate'])) {
         })
 
 
+
+        // Change function
         $('.btn1').click(function() {
             $('.slide1').slideDown();
             $('#slide2').css('display', 'none')
@@ -343,10 +431,4 @@ if (isset($_POST['upd_cate'])) {
         })
 
     })
-</script>
-
-<script>
-    function preview() {
-        frame.src = URL.createObjectURL(event.target.files[0]);
-    }
 </script>

@@ -19,21 +19,32 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<style>
+    .glow-txt {
+        animation: txt 6s ease infinite;
+        color: white;
+        text-shadow: 0 0 10px aqua;
+    }
+
+    @keyframes txt {
+        0% {
+            text-shadow: 0 0 15px aqua, 0 0 20px aqua;
+        }
+    }
+</style>
 
 
 <body>
     <div class="d-flex flex-column sidebar">
         <div class="container">
             <div align=center class="d-flex flex-column">
-                <div class=" glow-img">
-                    <img class="w-100" src="../../Images/phoenix.png" alt="">
-                </div>
-                <div class="h4 text-white" id="glow-txt" style="margin-top: -50px;">Phoenix Super-Fresh</div>
+                <img class="w-100" src="../../Images/phoenix.png" alt="">
+                <div class="h4 glow-txt" style="margin-top: -50px;">Phoenix Super-Fresh</div>
             </div>
         </div>
 
         <div class="pt-5" align="center">
-            <img src="../../Images/admin.png" class="w-50 h50" alt="">
+            <img src="../../Images/admin.png" class="w-50" alt="">
         </div>
 
         <div class="d-flex mb-5 flex-column gap-3 link">

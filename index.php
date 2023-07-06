@@ -9,8 +9,8 @@ include('./Connection/Connect.php');
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title> Metaverse Shopping</title>
-    <!-- <link rel="shortcut icon" type="image" href="./Images/image 16.png"> -->
+    <title> Phoenix Super-Fresh</title>
+    <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -107,12 +107,14 @@ if (isset($_POST['submit'])) {
                     $_SESSION['FirstName'] = $row['FirstName'];
                     $_SESSION['LastName'] = $row['LastName'];
                     $_SESSION['Photo'] = $row['Photo'];
+                    $_SESSION['StaffID'] = $row['StaffID'];
+                    $_SESSION['PositionID'] = $row['PositionID'];
 
 
                     if ($row['PositionID'] == 89) {
                         header('location: ./Admin/AdminDashboard/Dashboard.php ');
                     } else if ($row['PositionID'] == 90) {
-                        header('location: ./Seller/accountant.php ');
+                        header('location: ./Vendor/Sellers/Order.php');
                     }
                 }
             } else {
