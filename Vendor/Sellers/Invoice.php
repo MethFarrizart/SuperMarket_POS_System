@@ -16,6 +16,7 @@ if ($_SESSION['StaffID']) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../../Mart_POS_System/Components/design.css">
+    <link rel="stylesheet" href="../../Vendor/Components/design.css">
 
 </head>
 <style>
@@ -41,9 +42,6 @@ if ($_SESSION['StaffID']) {
 </style>
 
 <body>
-    <!-- <a href="../Sellers/Order.php" class="position-fixed">
-        <img src="../../Images/gobackicon.png" style="cursor: grab;" width="80px" height="80px">
-    </a> -->
 
     <div class="d-flex overflow-hidden">
         <?php
@@ -57,85 +55,105 @@ if ($_SESSION['StaffID']) {
             <?php
             $staffID = $_SESSION['StaffID'];
 
-            $select = $con->query("SELECT O.InvoiceID, O.InvoiceDate, O.Seller FROM invoice O WHERE O.Seller = $staffID");
-            while ($row = $select->fetch_assoc()) {
-                $match = $row['InvoiceID'];
+            $select = $con->query("SELECT O.InvoiceID, O.InvoiceDate, O.Seller FROM invoice O WHERE O.Seller = $staffID ORDER BY O.InvoiceID DESC");
+            if (mysqli_num_rows($select) > 0) {
+                while ($row = $select->fetch_assoc()) {
+                    $match = $row['InvoiceID'];
             ?>
-                <div class="page">
-                    <div class="d-flex justify-content-between">
-                        <b class="fs-3">Invoice</b>
-                        <div class="d-flex text-end">
-                            <div class="d-flex flex-column">
-                                <b class="fs-4">Phoenix Super-Fresh</b>
-                                <b>#2370, Keo Chenda Street, Chhroy Changva Commune</b>
+                    <div class="page">
+                        <div class="d-flex justify-content-between">
+                            <b class="fs-3">Invoice</b>
+                            <div class="d-flex text-end">
+                                <div class="d-flex flex-column">
+                                    <b class="fs-4">Phoenix Super-Fresh</b>
+                                    <b>#2370, Keo Chenda Street, Chhroy Changva Commune</b>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <hr>
+                        <hr>
 
 
-                    <b class="fs-5">Invoice-ID: #<?= $match ?> </b> <br>
-                    <b class="fs-5">Order-Date: <?= $row['InvoiceDate'] ?> </b> <br><br>
+                        <b class="fs-5">Invoice-ID: #<?= $row['InvoiceID'] ?> </b> <br>
+                        <b class="fs-5">Order-Date: <?= $row['InvoiceDate'] ?> </b> <br><br>
 
-                    <b class="fs-3"> Order Summary * </b>
-                    <div class="table-responsive mt-5">
-                        <table class="table ">
-                            <thead align=center>
-                                <tr>
-                                    <td class="fs-5 text-left"> Name </td>
-                                    <td class="fs-5"> Qty </td>
-                                    <td class="fs-5"> Price </td>
-                                    <td class="fs-5 text-end"> Amount </td>
-                                </tr>
-                            </thead>
+                        <b class="fs-3"> Order Summary * </b>
+                        <div class="table-responsive mt-5">
+                            <table class="table ">
+                                <thead align=center>
+                                    <tr>
+                                        <td class="fs-5 text-left"> Name </td>
+                                        <td class="fs-5"> Qty </td>
+                                        <td class="fs-5"> Price </td>
+                                        <td class="fs-5 text-end"> Amount </td>
+                                    </tr>
+                                </thead>
 
-                            <?php
-                            $pro_detail = $con->query("SELECT OD.ProductID, OD.Price, OD.Amount, OD.Price, OD.TotalCash, P.ProductID, P.ProductName FROM invoice_detail OD
+                                <?php
+                                $pro_detail = $con->query("SELECT  OD.ProductID, OD.Price, OD.Amount, OD.Price, OD.TotalCash, P.ProductID, P.ProductName FROM invoice_detail OD
                                 INNER JOIN product P ON OD.ProductID = P.ProductID WHERE OD.InvoiceID = $match");
-                            while ($detail = $pro_detail->fetch_assoc()) {
-                            ?>
-                                <tbody align=center style="line-height: 50px;">
-                                    <tr>
-                                        <td><?= $detail['ProductName'] ?></td>
-                                        <td><?= $detail['Amount'] ?></td>
-                                        <td>$ <?= number_format($detail['TotalCash'], 2) ?></td>
-                                        <td class="text-end"> $ <?= number_format($detail['TotalCash'], 2) ?></td>
-                                    </tr>
-                                </tbody>
-                            <?php } ?>
+                                while ($detail = $pro_detail->fetch_assoc()) {
+                                ?>
+                                    <tbody align=center style="line-height: 50px;">
+                                        <tr>
+                                            <td><?= $detail['ProductName'] ?></td>
+                                            <td><?= $detail['Amount'] ?></td>
+                                            <td>$ <?= number_format($detail['TotalCash'], 2) ?></td>
+                                            <td class="text-end"> $ <?= number_format($detail['TotalCash'], 2) ?></td>
+                                        </tr>
+                                    </tbody>
+                                <?php } ?>
 
 
-                            <?php
-                            $pay_detail = $con->query("SELECT * FROM payment WHERE InvoiceID = $match");
-                            while ($payment = $pay_detail->fetch_assoc()) {
-                            ?>
-                                <tfoot style=" line-height: 50px">
-                                    <tr>
-                                        <?php
-                                        $count = $con->query("SELECT SUM(Amount) AS Count FROM invoice_detail WHERE InvoiceID = $match");
-                                        while ($qty = $count->fetch_assoc()) {
-                                        ?>
-                                            <td colspan="2" class="text-end fs-5"> <b>Total Order: <?= $qty['Count'] ?> </b> </td>
+                                <?php
+                                $pay_detail = $con->query("SELECT * FROM payment WHERE InvoiceID = $match");
+                                while ($payment = $pay_detail->fetch_assoc()) {
+                                ?>
+                                    <tfoot style=" line-height: 50px">
+                                        <tr>
+                                            <?php
+                                            $count = $con->query("SELECT SUM(Amount) AS Count FROM invoice_detail WHERE InvoiceID = $match");
+                                            while ($qty = $count->fetch_assoc()) {
+                                            ?>
+                                                <td colspan="2" class="text-end fs-5"> <b>Total Order: <?= $qty['Count'] ?> </b> </td>
 
-                                        <?php } ?>
-                                        <td colspan="2" class="text-end fs-5">
-                                            <b>Sub Total: &nbsp; $ <?= number_format($payment['SubTotal'], 2) ?></b> <br>
-                                            <b>Grand Total: &nbsp; $ <?= number_format($payment['GrandTotal'], 2) ?></b>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            <?php } ?>
+                                            <?php } ?>
+                                            <td colspan="2" class="text-end fs-5">
+                                                <b>Sub Total: &nbsp; $ <?= number_format($payment['SubTotal'], 2) ?></b> <br>
+                                                <b>Grand Total: &nbsp; $ <?= number_format($payment['GrandTotal'], 2) ?></b>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                <?php } ?>
 
-                        </table>
+                            </table>
+                        </div>
+
+
+                        <div class="text-center font-weight-bold mt-4 pt-3">
+                            <h5> Thank you for your shopping ! <br> Enjoy with your product ordering</h5> <br><br>
+
+                            <h5>Contact: 081 411 553 / 010 37 37 55 <br> Facebook: PhoenixShopping</h5>
+                        </div>
+                        <div align=center class="pt-3 w-25 mb-5" style="border-bottom: 4px solid black; margin-left: 38%;"></div>
                     </div>
-
-
-                    <div class="text-center font-weight-bold mt-4 pt-3">
-                        <h5> Thank you for your shopping ! <br> Enjoy with your product ordering</h5> <br><br>
-
-                        <h5>Contact: 081 411 553 / 010 37 37 55 <br> Facebook: PhoenixShopping</h5>
+                <?php }
+            } else { ?>
+                <div class="loadingio-spinner-spinner-qn1vzcvkchk d-flex justify-content-center w-100" style="margin-top: 20%; background: none; color: yellow;">
+                    <div class="ldio-clilj3a1frv">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <h4 class="pb-4 mt-5 pt-5 text-white" align=center><i>None Ordering to make invoice!</i> </h4>
                     </div>
-                    <div align=center class="pt-3 w-25 mb-5" style="border-bottom: 4px solid black; margin-left: 38%;"></div>
                 </div>
             <?php } ?>
 </body>

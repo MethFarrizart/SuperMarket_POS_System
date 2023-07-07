@@ -108,6 +108,8 @@ if (isset($_GET['delete'])) {
                                 $select = $con->query("SELECT s.StaffID, s.PositionID, p.PositionID, s.Photo, p.PositionName, s.FirstName, s.LastName, s.Gender, s.DOB, s.Address, s.Contact, s.Email, s.WorkOn FROM staff s 
                                 INNER JOIN position p ON s.PositionID = p.PositionID");
                                 while ($row = $select->fetch_assoc()) {
+
+                                    $match = $row['PositionID'];
                                 ?>
                                     <div class="d-flex justify-content-between p-4">
                                         <div class="d-flex justify-content-between gap-5">
@@ -226,10 +228,18 @@ if (isset($_GET['delete'])) {
                                                         <label for="" class="control-label">Position: </label>
                                                         <select class="custom-select w-100 p-2" name="upd_position">
                                                             <?php
-                                                            $qry = $con->query("SELECT * FROM position ORDER BY PositionID");
+                                                            $qry = $con->query("SELECT * FROM Position");
                                                             while ($cate = $qry->fetch_assoc()) {
                                                             ?>
-                                                                <option value="<?php echo $cate['PositionID'] ?>"><?php echo $cate['PositionName'] ?></option>
+                                                                <?php
+                                                                if ($cate['PositionID'] == $match) {
+                                                                ?>
+                                                                    <option selected value="<?= $cate['PositionID'] ?>"><?= $cate['PositionName'] ?></option>
+
+                                                                <?php } else { ?>
+                                                                    <option value="<?= $cate['PositionID'] ?>"><?= $cate['PositionName'] ?></option>
+
+                                                                <?php } ?>
                                                             <?php } ?>
                                                         </select>
                                                     </div>

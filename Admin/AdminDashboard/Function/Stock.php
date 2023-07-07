@@ -28,7 +28,7 @@
                     </thead>
 
                     <?php
-                    $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Image, P.Qty, SUM(Qty) AS Count FROM invoice_detail OD
+                    $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Image, P.Qty, SUM(Amount) AS Count FROM invoice_detail OD
                         INNER JOIN product P ON P.ProductID = OD.ProductID GROUP BY OD.ProductID");
                     while ($stock_row = $stock->fetch_assoc()) {
                     ?>

@@ -135,9 +135,12 @@ include('../../Connection/Connect.php');
                 </div>
 
                 <div class="row mt-4">
+
+                    <!-- Yearly Incomes -->
                     <div class="col-8">
                         <div class="border border-all d-flex flex-column gap-3 p-4" style="background: none;">
-                            <div id="curve_chart" style="width: auto; height: 500px;"></div>
+                            <b class="fs-3"> <i>Yearly Incomes</i> </b>
+                            <div id="year_sale" style="width: auto; height: 400px;"></div>
                         </div>
                     </div>
 
@@ -197,6 +200,27 @@ include('../../Connection/Connect.php');
                                     </h4>
                                 <?php } ?>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Monthly Incomes -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="border border-all d-flex flex-column gap-3 p-4" style="background: none;">
+                            <b class="text-end fs-3"> <i>Monthly Incomes</i> </b>
+                            <div id="month_sale" style="width: auto; height: 600px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Incomes -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="border border-all d-flex flex-column gap-3 p-4" style="background: none;">
+                            <b class="text-end fs-3"> <i>Daily Incomes</i> </b>
+                            <div id="daily_sale" style="width: auto; height: 600px;"></div>
                         </div>
                     </div>
                 </div>
@@ -469,14 +493,13 @@ include('../../Connection/Connect.php');
 </body>
 
 </html>
-
 <script src="../../../Mart_POS_System/Action.js"></script>
 
 <!-- Google-Chartjs -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 
-
+<!-- Yearly Incomes -->
 <script>
     google.charts.load('current', {
         'packages': ['corechart']
@@ -485,9 +508,9 @@ include('../../Connection/Connect.php');
 
     function drawChart() {
         var datas = google.visualization.arrayToDataTable([
-            ['Year', 'Day Income From Sale'],
+            ['Year', 'Yearly Income'],
             <?php
-            $select = $con->query("SELECT O.InvoiceID, Date_Format(O.InvoiceDate, '%D') AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
+            $select = $con->query("SELECT O.InvoiceID, YEAR(O.InvoiceDate) AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
             INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY Day");
 
             while ($select_row = $select->fetch_assoc()) {
@@ -507,7 +530,83 @@ include('../../Connection/Connect.php');
             }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        var chart = new google.visualization.LineChart(document.getElementById('year_sale'));
+
+        chart.draw(datas, options);
+    }
+</script>
+
+
+<!-- Monthly Incomes -->
+<script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var datas = google.visualization.arrayToDataTable([
+            ['Year', 'Monthly Incomes'],
+            <?php
+            $select = $con->query("SELECT O.InvoiceID, DATE_FORMAT(O.InvoiceDate, '%b / %y') AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
+            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY Day");
+
+            while ($select_row = $select->fetch_assoc()) {
+                $day = $select_row['Day'];
+                $total = $select_row['Total'];
+            ?>['<?= $day ?>', <?= $total ?>],
+
+            <?php  } ?>
+        ]);
+
+        var options = {
+            title: 'The Curve of Selling',
+            curveType: 'function',
+            colors: ['blue'],
+            legend: {
+                position: 'bottom'
+            }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('month_sale'));
+
+        chart.draw(datas, options);
+    }
+</script>
+
+
+<!-- Daily Incomes -->
+<script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var datas = google.visualization.arrayToDataTable([
+            ['Year', 'Daily Incomes'],
+            <?php
+            $select = $con->query("SELECT O.InvoiceID, TIMESTAMP(O.InvoiceDate) AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
+            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY Day");
+
+            while ($select_row = $select->fetch_assoc()) {
+                $day = $select_row['Day'];
+                $total = $select_row['Total'];
+            ?>['<?= $day ?>', <?= $total ?>],
+
+            <?php  } ?>
+        ]);
+
+        var options = {
+            title: 'The Curve of Selling',
+            curveType: 'function',
+            colors: ['blue'],
+            legend: {
+                position: 'bottom'
+            }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('daily_sale'));
 
         chart.draw(datas, options);
     }

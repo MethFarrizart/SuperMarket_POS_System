@@ -109,9 +109,7 @@ while ($cate_row = $category->fetch_assoc()) {
                             <div></div>
                             <h4 class="pb-4 mt-5 pt-5" align=center><i>No Product has been added !</i> </h4>
                         </div>
-
                     </div>
-
                 </div>
 
             <?php } ?>

@@ -153,68 +153,6 @@
                             </table>
                         </div>
                     </div>
-
-
-                    <!-- Low Sale -->
-                    <div class="col-12 mt-4">
-                        <div class="border border-all d-flex flex-column gap-3 p-4 shadow;" style="border-radius: 20px; background: none">
-                            <h3>
-                                <b style="color: crimson;">Low Sale</b>
-                            </h3>
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr id="anim" class=" mt-4 text-white text-center h5" style="background: linear-gradient( rgb(13, 73, 141), rgb(33, 150, 188)); line-height: 50px;">
-                                        <td>ProductID</td>
-                                        <td> Product Name</td>
-                                        <td> Qty in Stock</td>
-                                        <td> Image </td>
-                                    </tr>
-                                </thead>
-
-                                <tbody class="text-center h6" style="line-height: 50px;">
-                                    <?php
-                                    $top_pro = $con->query("SELECT DISTINCT OD.ProductID, p.ProductID, p.Image, p.Qty, p.ProductName, COUNT(*) AS Amount FROM invoice_detail OD 
-                                            INNER JOIN Product p ON p.ProductID = OD.ProductID GROUP BY p.ProductID 
-                                            HAVING Amount < 10
-                                            ORDER BY Amount DESC LIMIT 5");
-                                    if (mysqli_num_rows($top_pro) > 0) {
-                                        while ($top_pro_row = $top_pro->fetch_assoc()) {
-                                    ?>
-                                            <tr class="text-center h6" style="line-height: 50px;">
-                                                <td><?= $top_pro_row['ProductID'] ?></td>
-                                                <td><?= $top_pro_row['ProductName'] ?></td>
-                                                <td><?= $top_pro_row['Qty'] ?></td>
-                                                <td><img src="../AdminDashboard/Images/<?= $top_pro_row['Image'] ?>" width="50" height="50" alt=""></td>
-                                            </tr>
-
-                                        <?php }
-                                    } else { ?>
-                                        <tr>
-                                            <td colspan="4" align=center>
-                                                <div class="d-flex gap-3 mt-5 justify-content-center">
-                                                    <div class="lds-ellipsis">
-                                                        <div></div>
-                                                        <div></div>
-                                                        <div></div>
-                                                        <div></div>
-                                                    </div>
-                                                    <h4><i>Nothing ...! </i></h4>
-                                                    <div class="lds-ellipsis">
-                                                        <div></div>
-                                                        <div></div>
-                                                        <div></div>
-                                                        <div></div>
-                                                    </div>
-                                                </div>
-
-                                            </td>
-                                        </tr>
-                                    <?php }
-                                    ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -331,7 +269,7 @@
                 'Product Name', 'Stock-Out', 'Balance'
             ],
             <?php
-            $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Qty, COUNT(*) AS Count FROM invoice_detail OD
+            $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Qty, SUM(Amount) AS Count FROM invoice_detail OD
                 INNER JOIN product P ON P.ProductID = OD.ProductID GROUP BY OD.ProductID LIMIT 5");
             while ($stock_row = $stock->fetch_assoc()) {
             ?>['<?= $stock_row['ProductName'] ?>', <?= $stock_row['Count'] ?>, <?= $stock_row['Qty'] ?>],
@@ -368,7 +306,7 @@
                 'Product Name', 'Stock-Out', 'Balance'
             ],
             <?php
-            $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Qty, SUM(Qty) AS Count FROM invoice_detail OD
+            $stock = $con->query("SELECT DISTINCT OD.ProductID, P.ProductID, P.ProductName, P.Qty, SUM(Amount) AS Count FROM invoice_detail OD
                 INNER JOIN product P ON P.ProductID = OD.ProductID GROUP BY OD.ProductID");
             while ($stock_row = $stock->fetch_assoc()) {
             ?>['<?= $stock_row['ProductName'] ?>', <?= $stock_row['Count'] ?>, <?= $stock_row['Qty'] ?>],

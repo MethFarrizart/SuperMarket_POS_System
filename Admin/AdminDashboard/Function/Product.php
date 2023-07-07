@@ -86,7 +86,7 @@
                         $page = 1;
                     }
                     $start_page = ($page - 1) * 5;
-                    $pro_qry = $con->query("SELECT c.CategoryName, s.StatusID, s.StatusName, p.ProductID, p.ProductName, p.Qty, p.Price, p.Import_On, p.Expired_On, p.StatusID, p.Image FROM product p
+                    $pro_qry = $con->query("SELECT c.CategoryName, p.CategoryID, s.StatusID, s.StatusName, p.ProductID, p.ProductName, p.Qty, p.Price, p.Import_On, p.Expired_On, p.StatusID, p.Image FROM product p
                                             INNER JOIN category c ON c.CategoryID = p.CategoryID 
                                             INNER JOIN status s ON s.StatusID = p.StatusID 
                                             ORDER BY p.ProductID DESC 
@@ -94,6 +94,8 @@
                     while ($pro_row = $pro_qry->fetch_assoc()) {
                         $import_date = date_create($pro_row['Import_On']);
                         $expire_date = date_create($pro_row['Expired_On']);
+
+                        $cate_match = $pro_row['CategoryID'];
                     ?>
                         <tbody>
                             <tr class="text-center h6" style="line-height: 50px;">
@@ -217,25 +219,25 @@
                                             <input type="text" name="upd_proname" value="<?= $pro_row['ProductName'] ?>" class="form-control">
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <label for="" class="control-label">Category: </label>
-                                                <input type="text" value="<?= $pro_row['CategoryName'] ?>" class="form-control">
-                                            </div>
-
-                                            <div class="col-6">
-                                                <label for="" class="control-label">Update Category: </label>
-                                                <select class="custom-select w-100 p-2" name="upd_procate">
+                                        <div class="col-6">
+                                            <label for="" class="control-label">Category: </label>
+                                            <select class="custom-select w-100 p-2" name="upd_procate">
+                                                <?php
+                                                $qry = $con->query("SELECT * FROM Category");
+                                                while ($cate = $qry->fetch_assoc()) {
+                                                ?>
                                                     <?php
-                                                    $qry = $con->query("SELECT * FROM category ORDER BY CategoryID");
-                                                    while ($cate = $qry->fetch_assoc()) {
+                                                    if ($cate['CategoryID'] == $cate_match) {
                                                     ?>
-                                                        <option value="<?= $cate['CategoryID'] ?>"><?= $cate['CategoryName'] ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </div>
-                                        </div>
+                                                        <option selected value="<?= $cate['CategoryID'] ?>"><?= $cate['CategoryName'] ?></option>
 
+                                                    <?php } else { ?>
+                                                        <option value="<?= $cate['CategoryID'] ?>"><?= $cate['CategoryName'] ?></option>
+
+                                                    <?php } ?>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
 
                                         <div class="col-12">
                                             <label for="" class="control-label">Quantity: </label>
