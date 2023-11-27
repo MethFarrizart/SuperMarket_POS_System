@@ -71,7 +71,7 @@ include('./Connection/Connect.php');
 
 
                 <div class="d-flex justify-content-around">
-                    <button class="mt-3 btn w-100" name="submit" style="background-color: rgb(26, 192, 26); font-weight: bold; color: white; border-radius: 25px;"> Log In</button>
+                    <button class="mt-3 btn w-100" name="submit" onclick="return preventBack()" style="background-color: rgb(26, 192, 26); font-weight: bold; color: white; border-radius: 25px;"> Log In</button>
                 </div>
 
                 <div class="mt-5">
@@ -112,7 +112,7 @@ if (isset($_POST['submit'])) {
 
 
                     if ($row['PositionID'] == 89) {
-                        header('location: ./Admin/AdminDashboard/Dashboard.php ');
+                        header('location: ./Admin/AdminDashboard/Dashboard.php');
                     } else if ($row['PositionID'] == 90) {
                         header('location: ./Vendor/Sellers/Order.php');
                     }
@@ -127,3 +127,5 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
+
+<script src="../../../Mart_POS_System/Action.js"></script>

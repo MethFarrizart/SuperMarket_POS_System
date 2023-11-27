@@ -158,7 +158,8 @@ if (isset($_POST['submit'])) {
                         if (mysqli_num_rows($result) > 0) {
                             while ($row = $result->fetch_assoc()) {
                         ?>
-                                <option style="transition: 0.5s ease;" class="bg-primary text-white font-weight-bold" value="<?php echo $row['PositionID'] ?>" selected><?php echo $row['PositionName'] ?></option>
+                                <option style="transition: 0.5s ease;" class="bg-primary text-white font-weight-bold" value="<?php echo $row['PositionID'] ?>" selected><?php echo $row['PositionName'] ?>
+                                </option>
                         <?php }
                         } ?>
                     </select>
@@ -219,4 +220,5 @@ if (isset($_POST['submit'])) {
 </body>
 
 </html>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
+</script>

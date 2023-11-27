@@ -1,5 +1,6 @@
 <?php
 include('../../Connection/Connect.php');
+require('../../../Mart_POS_System/Translate/lang.php');
 
 
 // add Product
@@ -11,6 +12,7 @@ if (isset($_POST['add_pro'])) {
     $pro_date       = date("Y-m-d H:i:s A");
     $pro_expired    = $_POST['pro_expired'];
     $pro_descr      = $_POST['pro_descr'];
+    $pro_brand      = $_POST['pro_brand'];
 
     $pro_status     = $_POST['pro_status'];
     $pro_img        = $_FILES['pro_img']['name'];
@@ -27,8 +29,8 @@ if (isset($_POST['add_pro'])) {
             </div>';
     } else {
         $ins_pro = "INSERT INTO `product`
-        (`ProductName`, `CategoryID`, `Qty`, `Price`, `Image`, `Import_On`, `Expired_On`, `StatusID`, `Description`) 
-        VALUES ('$pro_name', '$pro_cate', '$pro_qty', '$pro_price', '$pro_img', '$pro_date', '$pro_expired', '$pro_status', '$pro_descr') ";
+        (`ProductName`, `CategoryID`, `BrandID`, `Qty`, `Price`, `Image`, `Import_On`, `Expired_On`, `StatusID`, `Description`) 
+        VALUES ('$pro_name', '$pro_cate', '$pro_brand', '$pro_qty', '$pro_price', '$pro_img', '$pro_date', '$pro_expired', '$pro_status', '$pro_descr') ";
 
         $con->query($ins_pro);
     }
@@ -37,8 +39,8 @@ if (isset($_POST['add_pro'])) {
 
 <?php
 // Delete product
-if (isset($_GET['delete_pro'])) {
-    $id = $_GET['del_proid'];
+if (isset($_POST['delete_pro'])) {
+    $id = $_POST['del_proid'];
 
     $del_pro = "DELETE FROM `product` WHERE ProductID = $id";
     $con->query($del_pro);
@@ -63,23 +65,27 @@ if (isset($_POST['upd_pro'])) {
     $upd_expired = $_POST['upd_expired'];
     $upd_prostatus = $_POST['upd_prostatus'];
     $upd_prodescr = $_POST['upd_prodescr'];
+    $upd_probrand = $_POST['upd_probrand'];
+    $upd_proSupplier = $_POST['upd_proSupplier'];
 
-
-    $upd_proimg    = isset($_FILES['upd_proimg']['name']) ? $_FILES['upd_proimg']['name'] : '';
+    $upd_proimg    = $_FILES['upd_proimg']['name'];
     $upd_tmpimg    = $_FILES['upd_proimg']['tmp_name'];
     $path_imgs     = "../../Images/";
     move_uploaded_file($upd_tmpimg, $path_imgs . $upd_proimg);
 
-    $upd_product = " UPDATE `product` SET 
-                            `ProductName`='$upd_proname',
-                            `CategoryID`='$upd_procate',
-                            `Qty`='$upd_qty',
-                            `Price`='$upd_price',
-                            `Image`='$upd_proimg',
-                            `Expired_On`='$upd_expired',
-                            `StatusID`='$upd_prostatus',
-                            `Description`='$upd_prodescr'
-                            WHERE `ProductID` = '$check_proid' ";
+    $upd_product = "UPDATE `product` SET 
+                    `ProductName`='$upd_proname',
+                    `CategoryID`='$upd_procate',
+                    `BrandID`='$upd_probrand',
+                    `SupplierID`='$upd_proSupplier',
+                    `Qty`='$upd_qty',
+                    `Price`='$upd_price',
+                    `Image`='$upd_proimg',
+                    `Expired_On`='$upd_expired',
+                    `StatusID`='$upd_prostatus',
+                    `Description`='$upd_prodescr'
+                    WHERE `ProductID`='$check_proid'";
+
 
     $con->query($upd_product);
 
@@ -92,41 +98,6 @@ if (isset($_POST['upd_pro'])) {
 <?php } ?>
 
 
-<?php
-// add Category
-if (isset($_POST['add_cate'])) {
-    $cate_name  = $_POST['cate_name'];
-    $cate_descr = $_POST['cate_descr'];
-
-    $ins_cate = "INSERT INTO `category`(`CategoryName`, `Description`) VALUES ('$cate_name', '$cate_descr')";
-    $con->query($ins_cate);
-}
-
-// Delete Category
-if (isset($_GET['delete_cate'])) {
-    $id = $_GET['del_cateid'];
-
-    $del_cate = "DELETE FROM `category` WHERE CategoryID = $id";
-    $con->query($del_cate);
-
-?>
-    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%">
-        <h5 class="pt-3 text-white"> This Category on ID = <?php echo $id ?> has deleted</h5>
-        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
-    </div>
-
-<?php }
-
-// Update Category
-if (isset($_POST['upd_cate'])) {
-    $check_cateid = $_POST['check_cateid'];
-    $upd_catename = $_POST['upd_catename'];
-
-    $upd_cate = "UPDATE `Category` SET `CategoryName` = '$upd_catename' WHERE CategoryID = $check_cateid";
-    $con->query($upd_cate);
-}
-?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -137,17 +108,8 @@ if (isset($_POST['upd_cate'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Phoenix Super-Fresh</title>
     <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
-    <link rel="stylesheet" href="Css/Inventory.css">
+    <link rel="stylesheet" href="../../../Mart_POS_System/plugin/virtualSelection/virtual-select.min.css">
 </head>
-<style>
-    #slide2 {
-        display: none;
-    }
-
-    #slide3 {
-        display: none;
-    }
-</style>
 
 <body>
     <div class="overflow-hidden d-flex">
@@ -159,34 +121,10 @@ if (isset($_POST['upd_cate'])) {
             include('../../Components/Navbar.php');
             ?>
 
-            <div class="container-fluid">
-                <div class="d-flex justify-content-end gap-2" style="margin-top: 120px;">
-                    <button class="btn p-3 btn1" style=" background:linear-gradient(to right, rgb(54, 54, 175), dodgerblue); color: white;">
-                        Product List
-                    </button>
-
-                    <button class="btn btn-primary p-3 btn2" style=" background:linear-gradient(to right, rgb(54, 54, 175), dodgerblue); color: white;">
-                        Category List
-                    </button>
-
-                    <button class="btn btn-primary p-3 btn3" style=" background:linear-gradient(to right, rgb(54, 54, 175), dodgerblue); color: white;">
-                        Stock Control
-                    </button>
-                </div>
-
+            <div class="container-fluid" style="margin-top: 120px;">
                 <!-- Product -->
                 <?php
-                include('./Function/Product.php');
-                ?>
-
-                <!-- Category -->
-                <?php
-                include('./Function/Category.php');
-                ?>
-
-                <!-- Stock Control -->
-                <?php
-                include('./Function/Stock.php');
+                include('./Product.php');
                 ?>
             </div>
         </div>
@@ -198,7 +136,254 @@ if (isset($_POST['upd_cate'])) {
 </html>
 
 <script src="../../../Mart_POS_System/Action.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../../../Mart_POS_System/plugin/virtualSelection/virtual-select.min.js"></script>
+<script>
+    // Insert Brand Combobox
+    VirtualSelect.init({
+        ele: '#insert_brand',
+        search: true,
+        placeholder: ' Select Brand',
+        hideClearButton: true,
+        name: 'pro_brand',
+        required: true,
+        maxWidth: '100%',
+        // selectedValue: 10,
 
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM brand");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['BrandName'] ?>',
+                    value: <?= $row['BrandID'] ?>,
+                },
+
+            <?php } ?>
+        ],
+    });
+
+
+    // Insert Supplier Combobox
+    VirtualSelect.init({
+        ele: '#insert_supplier',
+        search: true,
+        placeholder: ' Select Supplier',
+        hideClearButton: true,
+        name: 'pro_supplier',
+        // required: true,
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM supplier");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['SupplierName'] ?>',
+                    value: <?= $row['SupplierID'] ?>,
+                },
+
+            <?php } ?>
+        ],
+    });
+
+
+    // Insert Category Combobox
+    VirtualSelect.init({
+        ele: '#insert_category',
+        search: true,
+        placeholder: 'Select Category',
+        hideClearButton: true,
+        name: 'pro_cate',
+        required: true,
+        maxWidth: '100%',
+        // selectedValue: 1,
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM category");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['CategoryName'] ?>',
+                    value: <?= $row['CategoryID'] ?>,
+                },
+
+            <?php } ?>
+        ],
+    });
+
+
+    // Update Category Combobox
+    VirtualSelect.init({
+        ele: '#update_category',
+        search: true,
+        placeholder: 'Select Category',
+        hideClearButton: true,
+        name: 'upd_procate',
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $verify = $con->query("SELECT * FROM product");
+            $matchingCategories = [];
+            $nonMatchingCategories = [];
+
+            while ($row = $verify->fetch_assoc()) {
+                $cate_match = $row['CategoryID'];
+                $qry = $con->query("SELECT * FROM Category");
+
+                while ($cate = $qry->fetch_assoc()) {
+                    $category = [
+                        'label' => $cate['CategoryName'],
+                        'value' => $cate['CategoryID'],
+                    ];
+
+                    if ($cate['CategoryID'] == $cate_match) {
+                        $matchingCategories[] = $category;
+                    } else {
+                        $nonMatchingCategories[] = $category;
+                    }
+                }
+            }
+
+
+
+            // Concatenate matching and non-matching categories
+            $allCategories = array_merge($matchingCategories, $nonMatchingCategories);
+
+            foreach ($allCategories as $category) {
+            ?> {
+                    label: '<?= $category['label'] ?>',
+                    value: '<?= $category['value'] ?>',
+                },
+            <?php } ?>
+        ],
+    });
+
+
+
+
+    // filter Category Combobox
+    VirtualSelect.init({
+        ele: '#filter_cate',
+        search: true,
+        placeholder: ' Select Category',
+        hideClearButton: true,
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM category");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['CategoryName'] ?>',
+                    value: <?= $row['CategoryID'] ?>
+                },
+
+            <?php } ?>
+        ],
+    });
+
+
+    // filter Supplier Combobox
+    VirtualSelect.init({
+        ele: '#filter_supplier',
+        search: true,
+        placeholder: ' Select Supplier',
+        hideClearButton: true,
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM supplier");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['SupplierName'] ?>',
+                    value: <?= $row['SupplierID'] ?>
+                },
+
+            <?php } ?>
+        ],
+    });
+
+
+    // filter Brand Combobox
+    VirtualSelect.init({
+        ele: '#filter_brand',
+        search: true,
+        placeholder: 'Select Brand',
+        hideClearButton: true,
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM brand");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['BrandName'] ?>',
+                    value: <?= $row['BrandID'] ?>
+                },
+
+            <?php } ?>
+        ],
+    });
+
+    // Status Combobox
+    VirtualSelect.init({
+        ele: '#filter_status',
+        search: true,
+        placeholder: 'Select Status',
+        hideClearButton: true,
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM status");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['StatusName'] ?>',
+                    value: <?= $row['StatusID'] ?>
+                },
+
+            <?php } ?>
+        ],
+    });
+</script>
+
+
+
+<script>
+    function refreshPage() {
+        setTimeout(function() {
+            location.reload();
+        }, 2000);
+    }
+
+
+    // $(document).ready(function() {
+    //     $('.show-details-btn').click(function() {
+    //         var detailsId = $(this).data("details-id");
+    //         var details = $("#" + detailsId + ".details");
+
+    //         $(".details").not(details).hide();
+    //         details.toggle(200);
+    //     });
+
+    //     $('.toggleBtn').click(function() {
+    //         if ($(this).find('.fa-plus') == true) {
+    //             $(this).find('.fa-minus').show()
+    //         }
+    //         $(this).find('.fa-plus, .fa-minus').toggle()
+
+    //     })
+    // });
+
+    // $(document).on('click', function(event) {
+    //     if (!$(event.target).is('.show-details-btn') && !$(event.target).is('.details')) {
+    //         $('.details').hide(200);
+    //     }
+    // });
+</script>
 
 <script>
     $(document).ready(function() {
@@ -379,7 +564,7 @@ if (isset($_POST['upd_cate'])) {
         $('#search_pro').on('keyup', function() {
             var search_pro = $(this).val();
             $.ajax({
-                url: "Data/SearchProduct.php",
+                url: "API/SearchProduct.php",
                 method: "POST",
                 data: {
                     search_pro: search_pro
@@ -398,7 +583,7 @@ if (isset($_POST['upd_cate'])) {
         $('#filter_cate').on('change', function() {
             var filter_cate = $(this).val();
             $.ajax({
-                url: "Data/FilterCategory.php",
+                url: "API/FilterCategory.php",
                 method: "POST",
                 data: {
                     filter_cate: filter_cate
@@ -416,7 +601,7 @@ if (isset($_POST['upd_cate'])) {
         $('#filter_status').on('change', function() {
             var filter_status = $(this).val();
             $.ajax({
-                url: "Data/FilterStatus.php",
+                url: "API/FilterStatus.php",
                 method: "POST",
                 data: {
                     filter_status: filter_status
@@ -429,6 +614,7 @@ if (isset($_POST['upd_cate'])) {
                 }
             })
         })
+
 
     })
 </script>

@@ -1,5 +1,6 @@
 <?php
 include('../../Connection/Connect.php');
+require('../../Translate/lang.php');
 
 
 // Update Staff
@@ -14,10 +15,13 @@ if (isset($_POST['upd_staff'])) {
     $upd_contact = $_POST['upd_contact'];
     $upd_position = $_POST['upd_position'];
 
-    $upd_staffimg = addslashes($_FILES['upd_staffimg']['tmp_name']);
-    $upd_staffimg = file_get_contents($upd_staffimg);
-    $upd_staffimg = base64_encode($upd_staffimg);
-
+    if ($_FILES['upd_staffimg']['name'] != "") {
+        $upd_staffimg = addslashes($_FILES['upd_staffimg']['tmp_name']);
+        $upd_staffimg = file_get_contents($upd_staffimg);
+        $upd_staffimg = base64_encode($upd_staffimg);
+    } else {
+        $upd_staffimg = $_POST['old_img'];
+    }
 
     $con->query("UPDATE `staff` SET
                 `FirstName`='$upd_firstName',
@@ -33,7 +37,7 @@ if (isset($_POST['upd_staff'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> This staff on ID = <?php echo $check_staffid ?> has updated</h5>
+        <h5 class="pt-3 text-white"><?= __('This staff on ID =') ?> <?php echo $check_staffid ?><?= ' ' . __('has updated') ?> </h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 <?php } ?>
@@ -49,7 +53,7 @@ if (isset($_GET['delete'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; top: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> This staff on ID = <?php echo $del_staffid ?> has deleted</h5>
+        <h5 class="pt-3 text-white"><?= __('This staff on ID =') ?>  <?php echo $del_staffid ?><?= __('has deleted') ?> </h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -103,7 +107,7 @@ if (isset($_GET['delete'])) {
                     <div class="col-12">
                         <div class="">
                             <div class="d-flex flex-column gap-4 ">
-                                <h3 class="p-4 pb-1 mb-1" style="text-decoration: overline;"> Staff Detail</h3>
+                                <h3 class="p-4 pb-1 mb-1" style="text-decoration: overline;"><?= __('Staff Detail') ?> </h3>
                                 <?php
                                 $select = $con->query("SELECT s.StaffID, s.PositionID, p.PositionID, s.Photo, p.PositionName, s.FirstName, s.LastName, s.Gender, s.DOB, s.Address, s.Contact, s.Email, s.WorkOn FROM staff s 
                                 INNER JOIN position p ON s.PositionID = p.PositionID");
@@ -114,15 +118,15 @@ if (isset($_GET['delete'])) {
                                     <div class="d-flex justify-content-between p-4">
                                         <div class="d-flex justify-content-between gap-5">
                                             <div class="d-flex flex-column gap-4">
-                                                <h6> StaffID : </h6>
-                                                <h6> Full Name : </h6>
-                                                <h6> Gender : </h6>
-                                                <h6> Date of Birth : </h6>
-                                                <h6> Position :</h6>
-                                                <h6> Address :</h6>
-                                                <h6> Contact :</h6>
-                                                <h6> Email : </h6>
-                                                <h6> Work On : </h6>
+                                                <h6><?= __('StaffID') ?> : </h6>
+                                                <h6><?= __('Full Name') ?> : </h6>
+                                                <h6><?= __('Gender') ?> : </h6>
+                                                <h6><?= __('Date of Birth') ?> : </h6>
+                                                <h6><?= __('Position') ?> :</h6>
+                                                <h6><?= __('Address') ?> :</h6>
+                                                <h6><?= __('Contact') ?> :</h6>
+                                                <h6><?= __('Email') ?> : </h6>
+                                                <h6><?= __('Work On') ?> : </h6>
                                             </div>
 
                                             <div class="d-flex flex-column gap-4">
@@ -142,12 +146,12 @@ if (isset($_GET['delete'])) {
 
                                             <!-- Update Staff -->
                                             <button data-bs-toggle="offcanvas" data-bs-target="#editStaff-<?= $row['StaffID'] ?>" aria-controls="editstaff" type="button" class="btn p-3 fs-5" style="width: 190px; background:linear-gradient(rgb(10, 107, 10), rgb(138, 138, 13)); color: yellow;">
-                                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                                <i class="fa-solid fa-pen-to-square"></i><?= ' ' . __('Edit') ?>
                                             </button>
 
                                             <!-- Delete Staff-->
                                             <button data-bs-toggle="modal" data-bs-target="#deleteStaff-<?= $row['StaffID'] ?>" type="button" class="btn p-3 fs-5" style="width: 190px; background:linear-gradient(to right,red, rgb(175, 175, 22) ); color: yellow;">
-                                                <i class="fa-sharp fa-solid fa-trash"></i> Delete
+                                                <i class="fa-sharp fa-solid fa-trash"></i><?= ' ' . __('Delete') ?>
                                             </button>
                                         </div>
                                     </div>
@@ -158,20 +162,20 @@ if (isset($_GET['delete'])) {
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header" style="background-color:crimson">
-                                                    <h3 class="modal-title text-warning" id="exampleModalLabel">Are You Sure?</h3>
+                                                    <h3 class="modal-title text-warning" id="exampleModalLabel"><?= __('Are You Sure ?') ?></h3>
                                                     <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="modal" aria-label="Close" style="cursor: grab;">
                                                 </div>
                                                 <div class="modal-body">
                                                     <form action="" method="get">
-                                                        <p class="mt-5 text-center"> Do you want to delete this staff as <?= '"' . $row['FirstName'] . ' ' . $row['LastName'] . '"' ?></p>
+                                                        <p class="mt-5 text-center"><?= __('Do you want to delete this staff as') ?> <?= '"' . $row['FirstName'] . ' ' . $row['LastName'] . '"' ?></p>
 
                                                         <div class="col-12">
                                                             <input type="hidden" class="form-control" name="del_staffid" value="<?= $row['StaffID'] ?>" readonly>
                                                         </div>
 
                                                         <div class="modal-footer mt-5">
-                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Leave</button>
-                                                            <button type="submit" name="delete" class="btn btn-outline-danger">Delete</button>
+                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><?= __('Leave') ?></button>
+                                                            <button type="submit" name="delete" class="btn btn-outline-danger"><?= __('Delete') ?></button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -182,7 +186,7 @@ if (isset($_GET['delete'])) {
                                     <!-- Update Staff -->
                                     <div class="offcanvas offcanvas-end w-25" tabindex="-1" id="editStaff-<?= $row['StaffID'] ?>" aria-labelledby="editLabel" style="color: white; background:linear-gradient(rgb(8, 234, 234), dodgerblue, rgb(13, 13, 183));">
                                         <div class="offcanvas-header">
-                                            <h3 class="offcanvas-title text-white" id="editLabel">Update Staff</h3>
+                                            <h3 class="offcanvas-title text-white" id="editLabel"><?= __('Update Staff') ?></h3>
                                             <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="offcanvas" aria-label="Close" style="cursor: grab;">
                                         </div>
 
@@ -194,38 +198,38 @@ if (isset($_GET['delete'])) {
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">First Name: </label>
+                                                        <label class="control-label"><?= __('First Name') ?>: </label>
                                                         <input type="text" name="upd_firstName" value=" <?= $row['FirstName'] ?>" class="form-control">
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">Last Name: </label>
+                                                        <label class="control-label"><?= __('Last Name') ?>: </label>
                                                         <input type="text" name="upd_lastName" value=" <?= $row['LastName'] ?>" class="form-control">
                                                     </div>
 
                                                     <div style="font-weight: bold;">
-                                                        <label for="" class="text-white"> Gender: </label>
+                                                        <label for="" class="text-white"><?= __('Gender') ?> : </label>
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" name="upd_gender" value="M" id="flexRadioDefault1" checked required>
                                                             <label class="form-check-label" for="flexRadioDefault1">
-                                                                Male
+                                                                <?= __('Male') ?>
                                                             </label>
                                                         </div>
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" name="upd_gender" value="F" id="flexRadioDefault2" required>
                                                             <label class="form-check-label" for="flexRadioDefault2">
-                                                                Female
+                                                                <?= __('Female') ?>
                                                             </label>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">Date of Birth: </label>
+                                                        <label class="control-label"><?= __('Date of Birth') ?>: </label>
                                                         <input type="date" name="upd_dob" value="<?= $row['DOB'] ?>" class="form-control">
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label for="" class="control-label">Position: </label>
+                                                        <label for="" class="control-label"><?= __('Position') ?>: </label>
                                                         <select class="custom-select w-100 p-2" name="upd_position">
                                                             <?php
                                                             $qry = $con->query("SELECT * FROM Position");
@@ -245,95 +249,44 @@ if (isset($_GET['delete'])) {
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">Address: </label>
+                                                        <label class="control-label"><?= __('Address') ?>: </label>
                                                         <input type="text" name="upd_adr" value="<?= $row['Address'] ?>" class="form-control">
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">Contact: </label>
+                                                        <label class="control-label"><?= __('Contact') ?>: </label>
                                                         <input type="text" name="upd_contact" value="<?= $row['Contact'] ?>" class="form-control">
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">Email: </label>
+                                                        <label class="control-label"><?= __('Email') ?>: </label>
                                                         <input type="text" name="upd_email" value="<?= $row['Email'] ?>" class="form-control">
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label class="control-label">Work On: </label>
+                                                        <label class="control-label"><?= __('Work On') ?>: </label>
                                                         <input type="datetime" value="<?= $row['WorkOn'] ?>" class="form-control" readonly>
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label for="" class="control-label">Photo: </label>
+                                                        <label for="" class="control-label"><?= __('Photo') ?>: </label>
+                                                        <input type="hidden" name="old_img" value="<?php $row['Photo'] ?>">
                                                         <input type="file" name="upd_staffimg" class="form-control"> <br>
                                                         <?php echo '<img src="data:image;base64,' . $row['Photo'] . ' " width=100px; height=100px;>'; ?>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer mt-5 pt-3" style="border-top: 1px solid white;">
                                                     <div class="d-flex gap-2">
-                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas">Leave</button>
-                                                        <button type="submit" name="upd_staff" class="btn btn-success">Update</button>
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="offcanvas"><?= __('Leave') ?></button>
+                                                        <button type="submit" name="upd_staff" class="btn btn-success"><?= __('Update') ?></button>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
-
                                 <?php } ?>
-                                <!-- </div> -->
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <!-- modal add position-->
-        <div class="modal fade" style="background-color: rgba(0, 0, 0, 0.685);" id="position" tabindex="-1" aria-labelledby="addproLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5 text-white" id="addproLabel">Position Control</h1>
-                        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="modal" aria-label="Close" style="cursor: grab;">
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" enctype="multipart/form-data">
-                            <div class="row gap-4">
-                                <div class="col-12">
-                                    <label for="" class="control-label">Position Name:</label>
-                                    <input type="text" name="pro_name" class="form-control">
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="" class="control-label">Average Salary:</label>
-                                    <input type="number" name="pro_sal" class="form-control">
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="" class="control-label">Bonus:</label>
-                                    <input type="number" name="pos_bonus" class="form-control">
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="" class="control-label">Image:</label>
-                                    <input type="file" name="pos_img" class="form-control">
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="" class="control-label">Description:</label>
-                                    <textarea name="pos_descr" class="form-control" rows="10"></textarea>
-                                </div>
-
-                            </div>
-
-                            <div class="modal-footer mt-5">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Leave</button>
-                                <button type="button" class="btn btn-success">Add</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>

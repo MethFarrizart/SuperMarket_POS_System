@@ -3,12 +3,45 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Roboto';
+    font-family: "roboto";
 }
 
 html{
     scroll-behavior: smooth;
 }
+
+.show-details-btn {
+    width: 60px;
+    height: 35px;
+}
+
+.top-sale-color{
+    background: linear-gradient(rgb(85, 13, 67), crimson);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text ;
+    background-clip: text;
+}
+
+.nearly-expire{
+    background: linear-gradient(rgb(52, 226, 61), rgb(87, 137, 13));
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text ;
+    background-clip: text;
+}
+
+    .rotate-img img {
+        animation: anime 2s linear infinite;
+    }
+
+    @keyframes anime {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 
 a{
     cursor: grab;
@@ -16,9 +49,24 @@ a{
     padding-top: 30px;
 }
 
+.text-style{
+    background: linear-gradient(rgb(193, 33, 193), rgb(20, 76, 209));
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text ;
+    background-clip: text;
+}
+
+
+.title-color{
+    background: linear-gradient(purple, rgb(113, 15, 105));
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text ;
+    background-clip: text;
+}
+
 .sidebar{
     background:linear-gradient(rgb(26, 26, 122), dodgerblue);
-    width: 300px;
+    width: 315px;
     position: fixed;
     left: 0;
     top: 0;
@@ -44,18 +92,16 @@ a{
 .main-content{
     transition: 0.5s ease;
     position: relative;
-    width: calc(100% - 300px);
-    left: 300px;
+    width: calc(100% - 315px);
+    left: 315px;
 }
 
 
 .header{
     position: fixed !important;
-    display: flex;
-    justify-content: space-between !important;	
     top: 0;
     width: 100%;
-    background:linear-gradient(to right,rgba(13, 13, 200, 0.852), dodgerblue);
+    background:linear-gradient(to right,rgba(0, 0, 255, 0.74), dodgerblue);
 }
 
 
@@ -171,5 +217,79 @@ a{
             transform: translate(24px, 0);
         }
     }
+
+  
+/* glidejs slide */
+.glide {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.glide__slide {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+    height: 300px;
+    border-radius: 15px;
+}
+
+.glide__arrow{
+    border-radius: 50%;
+    border: none;
+    background:linear-gradient(blue, aqua);
+}
+
+
+
+.search{
+    box-shadow: 0px 4px 4px rgba(93, 11, 11, 0.25);
+    line-height: 20px;
+}
+
+.btn-1{
+    background:linear-gradient(to top, rgb(54, 54, 175), dodgerblue);
+    color: white;
+}
+
+.btn-1:hover{color: white;}
+
+.custom-select{
+    border-radius: 5px;
+}
+
+.content{
+    background:linear-gradient(to top, rgb(54, 54, 175), dodgerblue);
+}
+
+label{
+    color: white;
+    font-weight: bold;
+}
+
+#editpro{
+    background: linear-gradient(dodgerblue, rgb(25, 25, 113));
+}
+
+#showDetailList {
+    display: none;
+}
+
+
+/* Display Dynamic Button */
+.details {
+    display: none;
+    z-index: 1000;
+    position: relative;
+    border-radius: 15px;
+    box-shadow: 2px 2px 15px black;
+    padding: 30px 50px;
+    background-color: white;
+}
+
+
+.watchBg {
+    background: linear-gradient(to right, purple, blueviolet);
+    border: 0;
+}
 
 

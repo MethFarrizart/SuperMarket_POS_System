@@ -24,7 +24,7 @@ while ($cate_row = $category->fetch_assoc()) {
                                 <h5 class="card-title pt-4"><?= $row['ProductName'] ?></h5>
                                 <p class="card-text"></p>
                                 <p> $ <?= number_format($row['Price'], 2)  ?></p>
-                                <h5> Left: <?= $row['Qty'] ?> Items</h5>
+                                <h5><?= __('Left') ?> : <?= $row['Qty'] . ' ' ?><?= __('Items') ?> </h5>
                             </div>
                         </div>
 
@@ -50,7 +50,7 @@ while ($cate_row = $category->fetch_assoc()) {
                                 <img src="../../Images/<?= $row['Image'] ?>" class="card-img-top" style="width: 200px">
                                 <h5 class="card-title pt-4"><?= $row['ProductName'] ?></h5>
                                 <p> $ <?= number_format($row['Price'], 2)  ?></p>
-                                <h5> Left: <?= $row['Qty'] ?> Items</h5>
+                                <h5> <?= __('Left') ?>: <?= $row['Qty'] ?> <?= __('Items') ?></h5>
                                 <form action="Order.php?id=<?= $row['ProductID'] ?>" method="post" align=center>
 
                                     <input type="hidden" name="p_id" value="<?= $row['ProductID'] ?>">
@@ -74,7 +74,7 @@ while ($cate_row = $category->fetch_assoc()) {
                                 <h5 class="card-title pt-4"><?= $row['ProductName'] ?></h5>
                                 <p class="card-text"></p>
                                 <p> $ <?= number_format($row['Price'], 2)  ?></p>
-                                <h5> Left: <?= $row['Qty'] ?> Items </h5>
+                                <h5> <?= __('Left') ?>: <?= $row['Qty'] ?> <?= __('Items') ?> </h5>
                                 <form action="Order.php?id=<?= $row['ProductID'] ?>" method="post" align=center>
 
                                     <input type="hidden" name="p_id" value="<?= $row['ProductID'] ?>">
@@ -107,7 +107,7 @@ while ($cate_row = $category->fetch_assoc()) {
                             <div></div>
                             <div></div>
                             <div></div>
-                            <h4 class="pb-4 mt-5 pt-5" align=center><i>No Product has been added !</i> </h4>
+                            <h4 class="pb-4 mt-5 pt-5" align=center><i><?= __('No Product has been added') ?>!</i> </h4>
                         </div>
                     </div>
                 </div>

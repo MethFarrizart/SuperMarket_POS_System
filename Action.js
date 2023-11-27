@@ -1,3 +1,4 @@
+
 // Sidebar and main content animation
 var move = document.querySelector('.sidebar');
 var click = document.querySelector('.click');
@@ -17,24 +18,44 @@ link.forEach(element => {
 });
 
 
-// Animation Number Count 
-$(document).ready(function() {
-    $('h4 span').each(function() {
-        const This = $(this);
-        $({
-            Count: This.text()
-        }).animate({
-            Count: This.parent().attr('data-count')
-        }, {
-            duration: 2000,
-            easing: "linear",
+// var clickBtn = document.querySelector('.clickBtn').querySelectorAll('.toggle');
+// clickBtn.forEach(obj => {
+//     obj.addEventListener('click', () => {
+//         clickBtn.forEach(n => n.classList.remove('toggle'))
+//         this.classList.add('toggle')
+//     })
+// });
 
-            step: function() {
-                This.text(Math.round(this.Count))
-            }
-        })
-    })
-})
+
+
+// clickBtn.addEventListener("click", () => {
+//     for (let i = 0; i < clickBtn.length; i++) {
+//         if (showDetail.style.display == "none") {
+//             showDetail.style.display = "block"
+//         } else {
+//             showDetail.style.display = "none"
+//         }
+//     }
+// })
+
+
+// Animation Number Count 
+// $(document).ready(function() {
+//     $('h4 span').each(function() {
+//         const This = $(this);
+//         $({
+//             Count: This.text()
+//         }).animate({
+//             Count: This.parent().attr('data-count')
+//         }, {
+//             duration: 2000,
+//             easing: "linear",
+//             step: function() {
+//                 This.text(Math.ceil(this.Count))
+//             }
+//         })
+//     })
+// })
 
 
 // Digital Clock
@@ -50,8 +71,7 @@ function datetime() {
     let day = Day[date.getDay()] ;
     let month = Month[date.getMonth()] ;
     let year = date.getFullYear();
-    let nth = date.getUTCDate() ;
-    let th = document.getElementById('th');
+    let day_num = date.getDate();
 
     if (hrs >= 12) {
         document.getElementById('time').innerHTML = "PM";
@@ -81,6 +101,7 @@ function datetime() {
     document.getElementById('day').innerHTML = day;
     document.getElementById('month').innerHTML = month;
     document.getElementById('year').innerHTML = year;
+    document.getElementById('day_num').innerHTML = day_num;
     
 }
 
@@ -88,7 +109,19 @@ setInterval(datetime, 10);
 
 
 // Show the image after chose it
-function preview() {
+function preview(event) {
     frame.src = URL.createObjectURL(event.target.files[0]);
 }
+
+
+
+//  Prevent To cross the page if not already login
+    // function preventBack() {
+    //     window.history.forward();
+    // }
+    // setTimeout("preventBack()", 0)
+    // window.onunload = function() {
+    //     null
+    // }
+
 

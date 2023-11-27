@@ -1,6 +1,6 @@
 <?php
 include('../../Connection/Connect.php');
-
+include('../../Translate/lang_sidebar.php');
 ?>
 
 <!DOCTYPE html>
@@ -34,23 +34,25 @@ include('../../Connection/Connect.php');
     <div class="d-flex flex-column sidebar">
         <div class="container">
             <div align=center class="d-flex flex-column">
-                <img class="w-100" src="../../Images/phoenix.png" alt="">
-                <div class="h4 glow-txt" style="margin-top: -50px;">Phoenix Super-Fresh</div>
+                <div class=" mt-2">
+                    <img class="w-75 h-75" src="../../Images/songbird2.png" alt="">
+                </div>
+                <div class="h5 glow-txt"><?= __('Phoenix Super-Fresh') ?></div>
             </div>
         </div>
 
-        <div class="pt-3" align="center">
+        <div class="pt-5" align="center">
             <img src="../../Images/cashier.png" class="w-50" alt="">
         </div>
 
-        <div class="d-flex mt-5 flex-column gap-3 link">
+        <div class="d-flex mt-3 flex-column gap-3 link">
 
             <!-- Dashboard Order Product link -->
             <a href="../Sellers/Order.php" class="active">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn4.iconfinder.com/data/icons/essentials-74/24/046_-_House-256.png" alt="">
                     <div class="h5 pt-3 text-white">
-                        Dashboard
+                        <?= func('Dashboard') ?>
                     </div>
                 </div>
             </a>
@@ -60,7 +62,7 @@ include('../../Connection/Connect.php');
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn1.iconfinder.com/data/icons/provincial-electricity-authority-2/64/bill_invoice_payment_receipt_billing-256.png" alt="">
                     <div class="h5 pt-3 text-white">
-                        Invoice Report
+                        <?= func('Invoice Report') ?>
                     </div>
                 </div>
             </a>
@@ -73,7 +75,7 @@ include('../../Connection/Connect.php');
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="../../Images/logout.png" alt="">
                     <div class="h5 pt-3 text-white">
-                        Log Out
+                        <?= func('Log Out') ?>
                     </div>
                 </div>
             </a>
