@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../Translate/lang.php');
 ?>
@@ -11,8 +12,17 @@ if (isset($_POST['add_cate'])) {
 
     $ins_cate = "INSERT INTO `category`(`CategoryName`, `Description`) VALUES ('$cate_name', '$cate_descr')";
     $con->query($ins_cate);
-}
 
+
+?>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+        <h5 class="pt-3 text-white"> <?= __("This Category Name") ?> <?= $cate_name . ' ' ?><?= __("is added") ?> </h5>
+        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+    </div>
+<?php } ?>
+
+
+<?php
 // Delete Category
 if (isset($_GET['delete_cate'])) {
     $id = $_GET['del_cateid'];
@@ -26,8 +36,9 @@ if (isset($_GET['delete_cate'])) {
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
-<?php }
+<?php } ?>
 
+<?php
 // Update Category
 if (isset($_POST['upd_cate'])) {
     $check_cateid = $_POST['check_cateid'];
@@ -38,7 +49,7 @@ if (isset($_POST['upd_cate'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> This Category on ID = <?php echo 'CAT' . $check_cateid ?> has updated</h5>
+        <h5 class="pt-3 text-white"> <?= __("This Category on ID =") ?> <?= $check_cateid . ' ' ?><?= __("has updated") ?> </h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 <?php } ?>
@@ -101,13 +112,13 @@ if (isset($_POST['upd_cate'])) {
 
                             <div class="mt-3 d-flex justify-content-between">
                                 <div>
-                                    <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button>
+                                    <!-- <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button> -->
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <div class="w-100">
+                                    <!-- <div class="w-100">
                                         <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_category">
-                                    </div>
+                                    </div> -->
 
                                     <!-- <div>
                                         <a data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">

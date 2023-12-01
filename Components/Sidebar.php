@@ -57,7 +57,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
         <div class="d-flex mt-5 flex-column gap-3 link">
             <!-- General information link -->
-            <a href="../../Admin/AdminDashboard/Dashboard.php" class="active">
+            <a href="../../Admin/AdminDashboard/Dashboard.php" class="active crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn4.iconfinder.com/data/icons/essentials-74/24/046_-_House-256.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -65,6 +65,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                     </div>
                 </div>
             </a>
+
 
             <!--Inventory Sub link -->
             <a class="toggleIcon" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">
@@ -75,11 +76,12 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                     </div>
                 </div>
             </a>
+
             <div class="collapse multi-collapse" id="multiCollapseExample2">
                 <div class="card-body d-flex flex-column gap-2">
 
                     <!-- Product link -->
-                    <a href="../../Admin/AdminDashboard/Inventory.php">
+                    <a href="../../Admin/AdminDashboard/Inventory.php" class="crosspageLink">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn0.iconfinder.com/data/icons/Aristocracy_WebDesignTuts/48/Download_Crate.png" alt="">
                             <div class="h5 pt-3 text-white">
@@ -89,7 +91,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                     </a>
 
                     <!--Category link -->
-                    <a href="../../Admin/AdminDashboard/Category.php">
+                    <a href="../../Admin/AdminDashboard/Category.php" class="crosspageLink">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn2.iconfinder.com/data/icons/e-commerce-534/64/Category-256.png" alt="">
                             <div class="h5 pt-3 text-white">
@@ -99,7 +101,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                     </a>
 
                     <!--Unit link -->
-                    <a href="../../Admin/AdminDashboard/Unit.php">
+                    <a href="../../Admin/AdminDashboard/Unit.php" class="crosspageLink">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn4.iconfinder.com/data/icons/app-menu-1/1001/Services-256.png" alt="">
                             <div class="h5 pt-3 text-white">
@@ -109,7 +111,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                     </a>
 
                     <!--Brand link -->
-                    <a href="../../Admin/AdminDashboard/Brand.php">
+                    <a href="../../Admin/AdminDashboard/Brand.php" class="crosspageLink">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn3.iconfinder.com/data/icons/branding-flat/512/cmyk-256.png" alt="">
                             <div class="h5 pt-3 text-white">
@@ -119,7 +121,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                     </a>
 
                     <!--Stock link -->
-                    <a href="../../Admin/AdminDashboard/Stock.php">
+                    <a href="../../Admin/AdminDashboard/Stock.php" class="crosspageLink">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn1.iconfinder.com/data/icons/fs-icons-ubuntu-by-franksouza-/256/stock_search.png" alt="">
                             <div class="h5 pt-3 text-white">
@@ -133,7 +135,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
 
             <!--Report link -->
-            <a href="../../Admin/AdminDashboard/Report.php">
+            <a href="../../Admin/AdminDashboard/Report.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn3.iconfinder.com/data/icons/logistics-and-delivery-services/52/4-256.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -145,7 +147,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
 
             <!--Customer link -->
-            <a href="../../Admin/AdminDashboard/Customer.php">
+            <a href="../../Admin/AdminDashboard/Customer.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn1.iconfinder.com/data/icons/march-8th-women-s-day-astute/512/Support-512.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -156,7 +158,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
 
             <!--Supplier link -->
-            <a href="../../Admin/AdminDashboard/Supplier.php">
+            <a href="../../Admin/AdminDashboard/Supplier.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn0.iconfinder.com/data/icons/supply-chain-dualine-flat/64/Supplier-256.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -166,7 +168,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
             </a>
 
             <!--purchase link -->
-            <a href="../../Admin/AdminDashboard/Purchase.php">
+            <a href="../../Admin/AdminDashboard/Purchase.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn1.iconfinder.com/data/icons/filled-outline-hobbies-1/64/hobby-shopping-bag-purchase-mall-256.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -177,7 +179,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
 
             <!--Staff link -->
-            <a href="../../Admin/AdminDashboard/Staff.php">
+            <a href="../../Admin/AdminDashboard/Staff.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn3.iconfinder.com/data/icons/human-resources-flat-3/48/107-256.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -187,7 +189,7 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
             </a>
 
             <!--Position link -->
-            <a href="../../Admin/AdminDashboard/Position.php">
+            <a href="../../Admin/AdminDashboard/Position.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn0.iconfinder.com/data/icons/job-seeker/256/folder_job_seeker_employee_unemployee_work-256.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -198,19 +200,18 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 
 
             <!-- Setting link -->
-            <a class="toggleIcon2" data-bs-toggle="collapse" data-bs-target="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">
+            <!-- <a class="toggleIcon2" data-bs-toggle="collapse" data-bs-target="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="https://cdn3.iconfinder.com/data/icons/macosxstyle/macosxstyle_png/128/Setting.png" alt="">
                     <div class="h5 pt-3 text-white">
                         <?= func('Setting') ?> &nbsp;&nbsp; <i class="fa-solid fa-angle-down"></i><i class="fa-solid fa-angle-up"></i>
                     </div>
                 </div>
-            </a>
+            </a> -->
 
-            <div class="collapse multi-collapse" id="collapseSetting">
+            <!-- <div class="collapse multi-collapse" id="collapseSetting">
                 <div class="card-body d-flex flex-column gap-2">
 
-                    <!-- Currency link -->
                     <a href="../../Admin/AdminDashboard/Currency.php">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn2.iconfinder.com/data/icons/flat-pack-1/64/Money-256.png" alt="">
@@ -220,8 +221,6 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                         </div>
                     </a>
 
-
-                    <!-- Prefix Code link -->
                     <a href="../../Admin/AdminDashboard/PrefixCode.php">
                         <div class="d-flex ps-5 pb-2 gap-4">
                             <img style="height: 40px;" class="mt-2" src="https://cdn1.iconfinder.com/data/icons/essentials-pack/96/code_coding_html_css_programming-256.png" alt="">
@@ -231,11 +230,11 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
                         </div>
                     </a>
                 </div>
-            </div>
+            </div> -->
 
 
             <!-- log out the program -->
-            <a href="../../index.php">
+            <a href="../../index.php" class="crosspageLink">
                 <div class="d-flex ps-4 pb-2 gap-4">
                     <img style="height: 40px;" class="mt-2" src="../../Images/logout.png" alt="">
                     <div class="h5 pt-3 text-white">
@@ -245,6 +244,11 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
             </a>
         </div>
     </div>
+
+    <!-- Reload animation to the next page -->
+    <div id="loading-container"></div>
+
+
 </body>
 
 </html>
@@ -252,9 +256,53 @@ if (!$_SESSION['FirstName'] && !$_SESSION['LastName']) {
 <!-- link bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
 
 <script src="../Action.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script>
+    let crossPageReload = document.querySelectorAll('.crosspageLink');
+    for (let i = 0; i < crossPageReload.length; i++) {
+        crossPageReload[i].addEventListener('click', () => {
+            let options = {
+                lines: 15, // The number of lines to draw
+                length: 40, // The length of each line
+                width: 15, // The line thickness
+                radius: 45, // The radius of the inner circle
+                scale: 1, // Scales overall size of the spinner
+                corners: 1, // Corner roundness (0..1)
+                speed: 0.5, // Rounds per second
+                rotate: 0, // The rotation offset
+                animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
+                direction: 1, // 1: clockwise, -1: counterclockwise
+                color: 'blue', // CSS color or array of colors
+                fadeColor: 'transparent', // CSS color or array of colors
+                top: '50%', // Top position relative to parent
+                left: '50%', // Left position relative to parent
+                shadow: '0 0 1px transparent', // Box-shadow for the lines
+                zIndex: 2000000000, // The z-index (defaults to 2e9)
+                className: 'spinner', // The CSS class to assign to the spinner
+                position: 'absolute', // Element positioning
+            }
+
+            // Show the loading container and start the spinner
+            document.getElementById('loading-container').style.display = 'flex';
+            document.body.style.transition = 'opacity 0.5s ease';
+            let spinner = new Spinner(options).spin();
+            document.getElementById('loading-container').appendChild(spinner.el);
+
+
+            // Simulate an asynchronous task (e.g., AJAX request)
+            setTimeout(function() {
+                // Stop the spinner and hide the loading container when the task is complete
+                spinner.stop();
+                document.getElementById('loading-container').style.display = 'none';
+                document.body.style.background = 'none';
+            }, 2000);
+        })
+    }
+</script>
 
 <script>
     $(document).ready(function() {

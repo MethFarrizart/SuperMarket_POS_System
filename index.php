@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 session_start();
 include('./Connection/Connect.php');
 ?>

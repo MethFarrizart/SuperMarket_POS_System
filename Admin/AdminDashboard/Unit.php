@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../Translate/lang.php');
 
@@ -14,21 +15,10 @@ if (isset($_POST['add_unit'])) {
     $con->query("INSERT INTO `Unit` (`UnitName`, `Abbreviation`, `Description`) VALUES ('$unit_name', '$shortKey', '$unit_descr')");
 
 ?>
-
-    <!-- <div class="col-12">
-        <label class="control-label"><?= __('Unit_ID') ?>: </label>
-        <input type="text" name="check_UnitID" value=" <?= $unit_row['UnitID'] ?>" class="form-control" readonly>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+        <h5 class="pt-3 text-white"> <?= __("This Unit Name") ?> <?= $unit_name . ' ' ?><?= __("is added") ?> </h5>
+        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
-
-    <div class="col-12">
-        <label class="control-label"><?= __('Unit Name') ?>: </label>
-        <input type="text" name="upd_UnitName" value=" <?= $unit_row['UnitName'] ?>" class="form-control">
-    </div>
-
-    <div class="col-12">
-        <label class="control-label"><?= __('Abbreviation') ?>: </label>
-        <input type="text" name="upd_shortKey" value=" <?= $unit_row['Abbreviation'] ?>" class="form-control">
-    </div> -->
 
 <?php } ?>
 
@@ -44,19 +34,11 @@ if (isset($_POST['upd_unit'])) {
                                WHERE UnitID = $check_UnitID");
 
 ?>
-
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+        <h5 class="pt-3 text-white"> <?= __("This Unit on ID = ") ?> <?= ' ' . $check_UnitID . ' ' ?><?= __("has updated") ?> </h5>
+        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+    </div>
 <?php } ?>
-
-
-
-
-
-
-
-
-
-
-
 
 <?php
 // Delete Unit
@@ -66,7 +48,7 @@ if (isset($_GET['del_unitId'])) {
     $con->query("DELETE FROM unit WHERE UnitID = '$id'");
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%">
-        <h5 class="pt-3 text-white"> <?= __('This Unit on ID') . ' = ' . $id  . ' ' . __("has deleted") ?></h5>
+        <h5 class="pt-3 text-white"> <?= __('This Unit on ID =') . $id  . ' ' . __("has deleted") ?></h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -129,13 +111,13 @@ if (isset($_GET['del_unitId'])) {
 
                             <div class="mt-3 d-flex justify-content-between">
                                 <div>
-                                    <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button>
+                                    <!-- <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button> -->
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <div class="w-100">
+                                    <!-- <div class="w-100">
                                         <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_unit">
-                                    </div>
+                                    </div> -->
 
                                     <!-- <div>
                                         <a data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">

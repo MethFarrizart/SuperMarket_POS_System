@@ -3,17 +3,20 @@ sleep(1);
 include('../../../Connection/Connect.php');
 include('../../../Translate/language.php');
 
-if (isset($_POST['filter_cate'])) {
-    $filter_cate = $_POST['filter_cate'];
+if (isset($_POST['filter_supplier'])) {
+    $filter_supplier = $_POST['filter_supplier'];
     $query = "SELECT c.CategoryName, b.BrandID, b.BrandName, s.StatusName, s.StatusID, sup.SupplierID, sup.SupplierName, p.* FROM product p
-        INNER JOIN category c ON c.CategoryID = p.CategoryID 
-        INNER JOIN status s ON s.StatusID = p.StatusID
-        LEFT JOIN brand b ON b.BrandID = p.BrandID 
-        LEFT JOIN Supplier Sup ON Sup.SupplierID = p.SupplierID 
-        WHERE p.CategoryID = $filter_cate ORDER BY p.ProductID DESC ";
+            INNER JOIN category c ON c.CategoryID = p.CategoryID 
+            INNER JOIN status s ON s.StatusID = p.StatusID
+            LEFT JOIN brand b ON b.BrandID = p.BrandID 
+            LEFT JOIN Supplier Sup ON Sup.SupplierID = p.SupplierID 
+            WHERE p.SupplierID = $filter_supplier ORDER BY p.ProductID DESC ";
+} else {
+    $query = "SELECT * FROM product";
 }
 
-$filter_cate_result = $con->query($query);
+$filter_supplier_result = $con->query($query);
+// if (mysqli_num_rows($filter_status_result) > 0) {
 ?>
 <table class="table table-hover mt-3">
     <thead>
@@ -33,8 +36,8 @@ $filter_cate_result = $con->query($query);
     </thead>
     <tbody>
         <?php
-        if (mysqli_num_rows($filter_cate_result) > 0) {
-            while ($pro_row = $filter_cate_result->fetch_assoc()) {
+        if (mysqli_num_rows($filter_supplier_result) > 0) {
+            while ($pro_row = $filter_supplier_result->fetch_assoc()) {
                 $import_date = date_create($pro_row['Import_On']);
                 $expire_date = date_create($pro_row['Expired_On']);
         ?>
@@ -122,7 +125,7 @@ $filter_cate_result = $con->query($query);
 <?php } ?>
 
 <?php } else { ?>
-    <h2 class="text-center pt-4"> <?= __('Nothing') ?> </h2>
+    <h2 class="text-center pt-4"><?= __('Nothing') ?> </h2>
 <?php } ?>
 </tbody>
 

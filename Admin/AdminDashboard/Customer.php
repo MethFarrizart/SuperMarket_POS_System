@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 require('../../Translate/lang.php');
 include('../../Connection/Connect.php');
 
@@ -13,8 +14,12 @@ if (isset($_POST['add_customer'])) {
     $customer_descr = $_POST['customer_descr'];
 
     $ins_customer = $con->query("INSERT INTO `customer`(`CustomerName`, `Contact`, `Email`, `Address`, `Description`) VALUES ('$CustomerName', '$Contact', '$Email', '$Address', '$customer_descr')");
-}
 ?>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+        <h5 class="pt-3 text-white"> <?= __("This Customer Name") ?> <?= $CustomerName . ' ' ?><?= __("is added") ?> </h5>
+        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+    </div>
+<?php } ?>
 
 <?php
 // Update customer
@@ -34,7 +39,7 @@ if (isset($_POST['upd_customer'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> <?= __('This Customer on ID') . ' = SUP' . $check_CustomerID  . ' ' . __("has updated") ?></h5>
+        <h5 class="pt-3 text-white"> <?= __('This Customer on ID =') . $check_CustomerID  . ' ' . __("has updated") ?></h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -50,7 +55,7 @@ if (isset($_GET['delete_customer'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%">
-        <h5 class="pt-3 text-white"> <?= __('This Customer on ID') . ' = CUS' . $id  . ' ' . __("has deleted") ?></h5>
+        <h5 class="pt-3 text-white"> <?= __('This Customer on ID =') . $id  . ' ' . __("has deleted") ?></h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -111,12 +116,12 @@ if (isset($_GET['delete_customer'])) {
 
                             <div class="mt-3 d-flex justify-content-between">
                                 <div>
-                                    <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button>
+                                    <!-- <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button> -->
                                 </div>
 
                                 <div class="d-flex gap-2">
                                     <div class="w-100">
-                                        <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_customer">
+                                        <!-- <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_customer"> -->
                                     </div>
                                 </div>
                             </div>

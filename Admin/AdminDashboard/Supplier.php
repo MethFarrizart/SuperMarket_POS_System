@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 require('../../Translate/lang.php');
 include('../../Connection/Connect.php');
 
@@ -111,12 +112,12 @@ if (isset($_GET['delete_supplier'])) {
 
                             <div class="mt-3 d-flex justify-content-between">
                                 <div>
-                                    <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button>
+                                    <!-- <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button> -->
                                 </div>
 
                                 <div class="d-flex gap-2">
                                     <div class="w-100">
-                                        <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_supplier">
+                                        <!-- <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_supplier"> -->
                                     </div>
                                 </div>
                             </div>

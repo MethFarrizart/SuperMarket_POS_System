@@ -14,6 +14,7 @@ if ($_SESSION['StaffID']) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../../Mart_POS_System/Components/design.css">
@@ -55,7 +56,7 @@ if ($_SESSION['StaffID']) {
 
             <form>
                 <?php
-                if (isset($_SESSION['StaffID'])) {
+                if (isset($_SESSION['StaffID']) && !empty($_SESSION['StaffID'])) {
                     $staffID = $_SESSION['StaffID'];
                     $select = $con->query("SELECT O.InvoiceID, O.InvoiceDate, O.Seller FROM invoice O WHERE O.Seller = $staffID ORDER BY O.InvoiceID DESC");
                     if (mysqli_num_rows($select) > 0) {
@@ -80,12 +81,10 @@ if ($_SESSION['StaffID']) {
                                         <b class="fs-5"><?= __('Invoice-ID') ?>: #<?= $row['InvoiceID'] ?> </b> <br>
                                         <b class="fs-5"><?= __('Order-Date') ?>: <?= $row['InvoiceDate'] ?> </b> <br><br>
                                     </div>
-                                    <!-- <div>
-                                        <form action="./PrintPDF.php" method="get">
-                                            <input type="hidden" name="getInvoiceID" value="<?= $row['InvoiceID'] ?>">
-                                            <button type="submit" class="btn btn-primary p-2 fw-bold" style="width: 130px;"> <?= __('Print') ?> </button>
-                                        </form>
-                                    </div> -->
+                                    <div>
+                                        <!-- <button type="button" onclick="printPDF()" class="btn btn-primary p-2 fw-bold" style="width: 130px;"> <?= __('Print') ?> </button> -->
+
+                                    </div>
                                 </div>
 
                                 <b class="fs-3"><?= __('Order Summary') ?> * </b>
@@ -198,3 +197,9 @@ if ($_SESSION['StaffID']) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="../../../Mart_POS_System/Action.js"></script>
+
+<!-- <script>
+    function printPDF() {
+        window.open('../../Admin/AdminDashboard/print.php');
+    }
+</script> -->

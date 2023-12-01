@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../../Mart_POS_System/Translate/lang.php');
 
@@ -23,19 +24,28 @@ if (isset($_POST['add_pro'])) {
     // Check product name when insert the name
     $validate_name = $con->query("SELECT * FROM product WHERE ProductName = '$pro_name'");
     if (mysqli_num_rows($validate_name) > 0) {
-        echo '<div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-                <h5 class="pt-3 text-white"> This Product has in table</h5>
-                <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
-            </div>';
-    } else {
+
+?>
+        <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+            <h5 class="pt-3 text-white"><?= __("This Product has in table") ?> </h5>
+            <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+        </div>
+    <?php } else { ?>
+
+        <?php
         $ins_pro = "INSERT INTO `product`
-        (`ProductName`, `CategoryID`, `BrandID`, `Qty`, `Price`, `Image`, `Import_On`, `Expired_On`, `StatusID`, `Description`) 
-        VALUES ('$pro_name', '$pro_cate', '$pro_brand', '$pro_qty', '$pro_price', '$pro_img', '$pro_date', '$pro_expired', '$pro_status', '$pro_descr') ";
+                (`ProductName`, `CategoryID`, `BrandID`, `Qty`, `Price`, `Image`, `Import_On`, `Expired_On`, `StatusID`, `Description`) 
+                VALUES ('$pro_name', '$pro_cate', '$pro_brand', '$pro_qty', '$pro_price', '$pro_img', '$pro_date', '$pro_expired', '$pro_status', '$pro_descr') ";
 
         $con->query($ins_pro);
-    }
-}
-?>
+        ?>
+
+        <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+            <h5 class="pt-3 text-white"> <?= __("This Product Name =") ?> <?php echo $pro_name ?> <?= __("is added") ?> </h5>
+            <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+        </div>
+<?php }
+} ?>
 
 <?php
 // Delete product
@@ -47,7 +57,7 @@ if (isset($_POST['delete_pro'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> This Product <?php echo $id ?> has deleted</h5>
+        <h5 class="pt-3 text-white"> <?= __("This Product on ID =") ?> <?php echo $id ?> <?= __("has deleted") ?> </h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -91,7 +101,7 @@ if (isset($_POST['upd_pro'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> This Product on ID = <?php echo $check_proid ?> has updated</h5>
+        <h5 class="pt-3 text-white"> <?= __("This Product on ID =") ?> <?php echo $check_proid ?> <?= __("has updated") ?> </h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
@@ -568,6 +578,43 @@ if (isset($_POST['upd_pro'])) {
                 method: "POST",
                 data: {
                     search_pro: search_pro
+                },
+                beforeSend: function() {
+                    $('#dataTable').html('Working ...');
+                },
+                success: function(data) {
+                    $('#dataTable').html(data);
+                }
+            })
+        })
+
+        // Filter Product by Brand
+        $('#filter_brand').on('change', function() {
+            var filter_brand = $(this).val();
+            $.ajax({
+                url: "API/FilterBrand.php",
+                method: "POST",
+                data: {
+                    filter_brand: filter_brand
+                },
+                beforeSend: function() {
+                    $('#dataTable').html('Working ...');
+                },
+                success: function(data) {
+                    $('#dataTable').html(data);
+                }
+            })
+        })
+
+
+        // Filter Product by Supplier
+        $('#filter_supplier').on('change', function() {
+            var filter_supplier = $(this).val();
+            $.ajax({
+                url: "API/FilterSupplier.php",
+                method: "POST",
+                data: {
+                    filter_supplier: filter_supplier
                 },
                 beforeSend: function() {
                     $('#dataTable').html('Working ...');

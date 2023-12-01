@@ -36,7 +36,7 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
 
                 <div class="mt-3 d-flex justify-content-between">
                     <div>
-                        <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button>
+                        <!-- <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button> -->
                     </div>
 
                     <div class="d-flex gap-2">
@@ -134,10 +134,10 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                             <i class="fa-solid fa-gear"></i>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="modal" data-bs-target="#viewpro-<?= $pro_row['ProductID'] ?>" aria-controls="viewpro">
+                                            <!-- <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="modal" data-bs-target="#viewpro-<?= $pro_row['ProductID'] ?>" aria-controls="viewpro">
                                                 <i style="color: purple;" class="fa fa-eye" aria-hidden="true"></i> &nbsp;
                                                 <?= __('View') ?>
-                                            </button>
+                                            </button> -->
                                             <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="offcanvas" data-bs-target="#editpro-<?= $pro_row['ProductID'] ?>" aria-controls="editpro">
                                                 <i style="color: green;" class="fa-solid fa-pen-to-square"></i> &nbsp;
                                                 <?= __('Edit') ?>

@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../Translate/lang.php');
 ?>
@@ -11,23 +12,32 @@ if (isset($_POST['add_brand'])) {
 
     $ins_brand = "INSERT INTO `brand`(`BrandName`, `Description`) VALUES ('$brand_name', '$brand_descr')";
     $con->query($ins_brand);
-}
 
+?>
+    <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
+        <h5 class="pt-3 text-white"> <?= __("This Brand Name") ?> <?= $brand_name . ' ' ?><?= __("is added") ?> </h5>
+        <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
+    </div>
+<?php } ?>
+
+
+
+<?php
 // Delete Brand
 if (isset($_GET['delete_brand'])) {
     $id = $_GET['del_brandId'];
 
     $del_brand = "DELETE FROM `brand` WHERE BrandID = $id";
     $con->query($del_brand);
-
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%">
-        <h5 class="pt-3 text-white"> <?= __('This Brand on ID') . ' = BRA' . $id  . ' ' . __("has deleted") ?></h5>
+        <h5 class="pt-3 text-white"> <?= __('This Brand on ID =') . $id  . ' ' . __("has deleted") ?></h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
+<?php } ?>
 
-<?php }
 
+<?php
 // Update Brand
 if (isset($_POST['upd_brand'])) {
     $check_BrandID = $_POST['check_BrandID'];
@@ -37,8 +47,9 @@ if (isset($_POST['upd_brand'])) {
     $con->query($upd_brand);
 
 ?>
+
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:green; top: 0; border-radius: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"> <?= __('This Brand on ID') . ' = BRA' . $check_BrandID  . ' ' . __("has updated") ?></h5>
+        <h5 class="pt-3 text-white"> <?= __('This Brand on ID =') . $check_BrandID  . ' ' . __("has updated") ?></h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 <?php } ?>
@@ -101,13 +112,13 @@ if (isset($_POST['upd_brand'])) {
 
                             <div class="mt-3 d-flex justify-content-between">
                                 <div>
-                                    <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button>
+                                    <!-- <button type="button" class="btn p-2 px-3 btn-1 text-white">10</button> -->
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <div class="w-100">
+                                    <!-- <div class="w-100">
                                         <input type="text" class="form-control search" style="border-radius:15px;" placeholder="Search..." id="search_brand">
-                                    </div>
+                                    </div> -->
 
                                     <!-- <div>
                                         <a data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">

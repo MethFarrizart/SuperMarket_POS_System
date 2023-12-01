@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../Translate/lang.php');
 

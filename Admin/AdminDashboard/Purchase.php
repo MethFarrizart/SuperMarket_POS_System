@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../Translate/lang.php');
 ?>
@@ -115,9 +116,6 @@ require('../../Translate/lang.php');
 
         // Show the loading container and start the spinner
         document.getElementById('loading-container').style.display = 'flex';
-        document.body.style.opacity = 0.4;
-        document.body.style.transition = 'opacity 0.3s ease';
-        // document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.687)';
         let spinner = new Spinner(options).spin();
         document.getElementById('loading-container').appendChild(spinner.el);
 
@@ -127,7 +125,6 @@ require('../../Translate/lang.php');
             // Stop the spinner and hide the loading container when the task is complete
             spinner.stop();
             document.getElementById('loading-container').style.display = 'none';
-            document.body.style.zIndex = '2000000000';
             document.body.style.background = 'none';
             window.location.href = "PurchaseDetail.php";
         }, 2000);

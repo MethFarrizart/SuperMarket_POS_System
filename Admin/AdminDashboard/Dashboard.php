@@ -539,7 +539,7 @@ include('../../Connection/Connect.php');
 
                 <div class=" mt-4">
                     <!-- Monthly Expense -->
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-6">
                             <div class="border border-all d-flex flex-column gap-3 p-4 shadow" style="background: none;">
                                 <b class="fs-3 text-style"> <i> <?= __('Monthly Expense') ?></i> </b>
@@ -547,14 +547,13 @@ include('../../Connection/Connect.php');
                             </div>
                         </div>
 
-                        <!-- Annual Expense -->
                         <div class="col-6">
                             <div class="border border-all d-flex flex-column gap-3 p-4 shadow" style="background: none;">
                                 <b class="text-start fs-3 text-style"> <i> <?= __('Annual Expense') ?></i> </b>
                                 <div id="annual_expense" style="width: auto; height: 400px;"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
 
@@ -900,6 +899,7 @@ include('../../Connection/Connect.php');
                 </div>
             </div>
         </div>
+
     </div>
     </div>
 
@@ -1016,6 +1016,7 @@ include('../../Connection/Connect.php');
 </body>
 
 </html>
+
 <script src="../../../Mart_POS_System/Action.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.js"></script>

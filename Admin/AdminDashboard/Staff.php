@@ -1,4 +1,5 @@
 <?php
+sleep(2);
 include('../../Connection/Connect.php');
 require('../../Translate/lang.php');
 
@@ -53,7 +54,7 @@ if (isset($_GET['delete'])) {
 
 ?>
     <div class="d-flex justify-content-between alert alert-dismissible alert_delete fade show p-4 pt-3" role="alert" style="background-color:orange; border-radius: 0; top: 0; z-index: 999999999; position: fixed; width:100%; transition: 0.6s ease">
-        <h5 class="pt-3 text-white"><?= __('This staff on ID =') ?>  <?php echo $del_staffid ?><?= __('has deleted') ?> </h5>
+        <h5 class="pt-3 text-white"><?= __('This staff on ID =') ?> <?php echo $del_staffid ?><?= __('has deleted') ?> </h5>
         <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="50px" height="50px" data-bs-dismiss="alert" aria-label="Close" style="cursor: grab;">
     </div>
 
