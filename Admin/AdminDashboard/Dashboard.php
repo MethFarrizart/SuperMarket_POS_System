@@ -100,17 +100,17 @@ include('../../Connection/Connect.php');
                                         <?= __('Total Purchase') ?>
                                     </h5>
 
-                                    <!-- <div>
+                                    <div>
                                         <?php
-                                        $sell_total = $con->query("SELECT * FROM invoice");
-                                        $total = mysqli_num_rows($sell_total);
+                                        $purchase_total = $con->query("SELECT * FROM purchase");
+                                        $total = mysqli_num_rows($purchase_total);
                                         if ($total > 0) {
                                         ?>
-                                            <span class="text-white h6 fw-bold counter">
+                                            <span class="text-white h6 fw-bold">
                                                 <?= $total ?> <?= __('Times') ?>
                                             </span>
                                         <?php } ?>
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
 
@@ -122,18 +122,18 @@ include('../../Connection/Connect.php');
                                         <?= __('Total Expense') ?>
                                     </h5>
 
-                                    <!-- <div>
+                                    <div>
                                         <?php
-                                        $income = $con->query("SELECT SUM(GrandTotal) AS grandTotal FROM payment");
-                                        while ($incomeTotal = $income->fetch_assoc()) {
-                                            $result = $incomeTotal['grandTotal']
+                                        $expense = $con->query("SELECT SUM(Grand_total) AS grandTotal FROM purchasepayment");
+                                        while ($expenseTotal = $expense->fetch_assoc()) {
+                                            $result = $expenseTotal['grandTotal']
                                         ?>
-                                            <span class="text-white h6 fw-bold counter">
+                                            <span class="text-white h6 fw-bold">
                                                 <?= '$ ' . number_format($result, 2)  ?>
                                             </span>
 
                                         <?php  } ?>
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,7 +161,7 @@ include('../../Connection/Connect.php');
                                         if (mysqli_num_rows($sell_total) > 0) {
                                         ?>
                                             <div class="text-white h6 fw-bold">
-                                                <span class="counter">
+                                                <span>
                                                     <?= mysqli_num_rows($sell_total) ?>
                                                 </span>
                                                 <span><?= __('Times') ?></span>
@@ -188,7 +188,7 @@ include('../../Connection/Connect.php');
                                         ?>
                                             <div class="text-white h6 fw-bold">
                                                 <span>$ </span>
-                                                <span class="counter">
+                                                <span>
                                                     <?= number_format($result, 2)  ?>
                                                 </span>
                                             </div>
@@ -539,7 +539,7 @@ include('../../Connection/Connect.php');
 
                 <div class=" mt-4">
                     <!-- Monthly Expense -->
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-6">
                             <div class="border border-all d-flex flex-column gap-3 p-4 shadow" style="background: none;">
                                 <b class="fs-3 text-style"> <i> <?= __('Monthly Expense') ?></i> </b>
@@ -553,7 +553,7 @@ include('../../Connection/Connect.php');
                                 <div id="annual_expense" style="width: auto; height: 400px;"></div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
 
 
@@ -1079,6 +1079,7 @@ include('../../Connection/Connect.php');
 </script>
 
 
+<!-- Annual Expense -->
 <script>
     google.charts.load('current', {
         'packages': ['corechart']
@@ -1087,13 +1088,14 @@ include('../../Connection/Connect.php');
 
     function drawChart() {
         var datas = google.visualization.arrayToDataTable([
-            ['Year', 'Daily Incomes'],
+            ['Year', 'Annual Expense'],
             <?php
-            $select = $con->query("SELECT O.InvoiceID, Date(O.InvoiceDate) AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
-            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY Day");
+            $select = $con->query("SELECT O.PurchaseID, YEAR(O.PurchaseDate) AS YEAR , SUM(Pay.Grand_total) AS Total , Pay.PurchaseID FROM purchasepayment Pay
+            INNER JOIN Purchase O ON O.PurchaseID = Pay.PurchaseID GROUP BY YEAR
+            ");
 
             while ($select_row = $select->fetch_assoc()) {
-                $day = $select_row['Day'];
+                $day = $select_row['YEAR'];
                 $total = $select_row['Total'];
             ?>['<?= $day ?>', <?= $total ?>],
 
@@ -1105,10 +1107,50 @@ include('../../Connection/Connect.php');
             legend: {
                 position: 'bottom'
             },
-            pointSize: 10
+            pointSize: 10,
+            colors: ['blueviolet'],
         };
 
         var chart = new google.charts.Bar(document.getElementById('annual_expense'));
+
+        chart.draw(datas, options);
+    }
+</script>
+
+
+<!-- Monthly Expense -->
+<script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var datas = google.visualization.arrayToDataTable([
+            ['Month', 'Monthly Expense'],
+            <?php
+            $select = $con->query("SELECT p.PurchaseID, DATE_FORMAT(p.PurchaseDate, '%M / %Y') AS MONTH , SUM(pay.Grand_total) AS Total , pay.PurchaseID FROM purchasepayment pay
+            INNER JOIN Purchase p ON p.PurchaseID = pay.PurchaseID 
+            GROUP BY MONTH ORDER BY p.PurchaseDate");
+
+            while ($select_row = $select->fetch_assoc()) {
+                $day = $select_row['MONTH'];
+                $total = $select_row['Total'];
+            ?>['<?= $day ?>', <?= $total ?>],
+
+            <?php  } ?>
+        ]);
+
+        var options = {
+            curveType: 'function',
+            colors: ['red'],
+            legend: {
+                position: 'bottom'
+            },
+            pointSize: 10,
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('monthly_expense'));
 
         chart.draw(datas, options);
     }
@@ -1151,47 +1193,6 @@ include('../../Connection/Connect.php');
         chart.draw(datas, options);
     }
 </script>
-
-
-<!-- Monthly Expense -->
-<script>
-    google.charts.load('current', {
-        'packages': ['corechart']
-    });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-        var datas = google.visualization.arrayToDataTable([
-            ['Year', 'Monthly Incomes'],
-            <?php
-            $select = $con->query("SELECT O.InvoiceID, DATE_FORMAT(O.InvoiceDate,  '%M / %Y') AS MONTH , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
-            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY MONTH ORDER BY O.InvoiceDate");
-
-            while ($select_row = $select->fetch_assoc()) {
-                $day = $select_row['MONTH'];
-                $total = $select_row['Total'];
-            ?>['<?= $day ?>', <?= $total ?>],
-
-            <?php  } ?>
-        ]);
-
-        var options = {
-            curveType: 'function',
-            colors: ['red'],
-            legend: {
-                position: 'bottom'
-            },
-            pointSize: 10,
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('monthly_expense'));
-
-        chart.draw(datas, options);
-    }
-</script>
-
-
-
 
 
 <!-- Daily Incomes -->
