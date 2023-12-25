@@ -8,7 +8,9 @@ require('../../../Mart_POS_System/Translate/lang.php');
 if (isset($_POST['add_pro'])) {
     $pro_name       = $_POST['pro_name'];
     $pro_cate       = $_POST['pro_cate'];
-    $pro_qty        = $_POST['pro_qty'];
+    $pro_supplier       = $_POST['pro_supplier'];
+    $pro_unitType   = $_POST['pro_unitType'];
+    $pro_purchasePrice = $_POST['pro_purchasePrice'];
     $pro_price      = $_POST['pro_price'];
     $pro_date       = date("Y-m-d H:i:s A");
     $pro_expired    = $_POST['pro_expired'];
@@ -34,8 +36,8 @@ if (isset($_POST['add_pro'])) {
 
         <?php
         $ins_pro = "INSERT INTO `product`
-                (`ProductName`, `CategoryID`, `BrandID`, `Qty`, `Price`, `Image`, `Import_On`, `Expired_On`, `StatusID`, `Description`) 
-                VALUES ('$pro_name', '$pro_cate', '$pro_brand', '$pro_qty', '$pro_price', '$pro_img', '$pro_date', '$pro_expired', '$pro_status', '$pro_descr') ";
+                (`ProductName`, `CategoryID`, `BrandID`, `SupplierID`, `UnitID`, `PurchasePrice`, `Price`, `Image`, `Import_On`, `Expired_On`, `StatusID`, `Description`) 
+                VALUES ('$pro_name', '$pro_cate', '$pro_brand', '$pro_supplier', '$pro_unitType', '$pro_purchasePrice', '$pro_price', '$pro_img', '$pro_date', '$pro_expired', '$pro_status', '$pro_descr') ";
 
         $con->query($ins_pro);
         ?>
@@ -70,7 +72,8 @@ if (isset($_POST['upd_pro'])) {
     $check_proid = $_POST['check_proid'];
     $upd_proname = $_POST['upd_proname'];
     $upd_procate = $_POST['upd_procate'];
-    $upd_qty = $_POST['upd_qty'];
+
+    $upd_purchasePrice = $_POST['upd_purchasePrice'];
     $upd_price = $_POST['upd_price'];
     $upd_expired = $_POST['upd_expired'];
     $upd_prostatus = $_POST['upd_prostatus'];
@@ -88,7 +91,7 @@ if (isset($_POST['upd_pro'])) {
                     `CategoryID`='$upd_procate',
                     `BrandID`='$upd_probrand',
                     `SupplierID`='$upd_proSupplier',
-                    `Qty`='$upd_qty',
+                    `PurchasePrice`='$upd_purchasePrice',
                     `Price`='$upd_price',
                     `Image`='$upd_proimg',
                     `Expired_On`='$upd_expired',
@@ -156,9 +159,7 @@ if (isset($_POST['upd_pro'])) {
         placeholder: ' Select Brand',
         hideClearButton: true,
         name: 'pro_brand',
-        required: true,
         maxWidth: '100%',
-        // selectedValue: 10,
 
         options: [
             <?php
@@ -174,6 +175,30 @@ if (isset($_POST['upd_pro'])) {
     });
 
 
+    // Insert unit Combobox
+    VirtualSelect.init({
+        ele: '#insert_unit',
+        search: true,
+        placeholder: ' Select Unit',
+        hideClearButton: true,
+        name: 'pro_unitType',
+        required: true,
+        maxWidth: '100%',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM unit");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['UnitName'] ?>',
+                    value: <?= $row['UnitID'] ?>,
+                },
+
+            <?php } ?>
+        ],
+    });
+
+
     // Insert Supplier Combobox
     VirtualSelect.init({
         ele: '#insert_supplier',
@@ -181,7 +206,6 @@ if (isset($_POST['upd_pro'])) {
         placeholder: ' Select Supplier',
         hideClearButton: true,
         name: 'pro_supplier',
-        // required: true,
         maxWidth: '100%',
 
         options: [
@@ -207,7 +231,6 @@ if (isset($_POST['upd_pro'])) {
         name: 'pro_cate',
         required: true,
         maxWidth: '100%',
-        // selectedValue: 1,
 
         options: [
             <?php
@@ -221,57 +244,6 @@ if (isset($_POST['upd_pro'])) {
             <?php } ?>
         ],
     });
-
-
-    // Update Category Combobox
-    VirtualSelect.init({
-        ele: '#update_category',
-        search: true,
-        placeholder: 'Select Category',
-        hideClearButton: true,
-        name: 'upd_procate',
-        maxWidth: '100%',
-
-        options: [
-            <?php
-            $verify = $con->query("SELECT * FROM product");
-            $matchingCategories = [];
-            $nonMatchingCategories = [];
-
-            while ($row = $verify->fetch_assoc()) {
-                $cate_match = $row['CategoryID'];
-                $qry = $con->query("SELECT * FROM Category");
-
-                while ($cate = $qry->fetch_assoc()) {
-                    $category = [
-                        'label' => $cate['CategoryName'],
-                        'value' => $cate['CategoryID'],
-                    ];
-
-                    if ($cate['CategoryID'] == $cate_match) {
-                        $matchingCategories[] = $category;
-                    } else {
-                        $nonMatchingCategories[] = $category;
-                    }
-                }
-            }
-
-
-
-            // Concatenate matching and non-matching categories
-            $allCategories = array_merge($matchingCategories, $nonMatchingCategories);
-
-            foreach ($allCategories as $category) {
-            ?> {
-                    label: '<?= $category['label'] ?>',
-                    value: '<?= $category['value'] ?>',
-                },
-            <?php } ?>
-        ],
-    });
-
-
-
 
     // filter Category Combobox
     VirtualSelect.init({

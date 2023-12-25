@@ -84,6 +84,7 @@ if (isset($_GET['deletePurchaseID'])) {
                                         <td><?= __("PurchaseID") ?></td>
                                         <td><?= __("Supplier") ?></td>
                                         <td><?= __("Before Discount") ?></td>
+                                        <td><?= __("After Discount") ?></td>
                                         <td><?= __("Grand Total") ?></td>
                                         <td><?= __("Status") ?></td>
                                     </tr>
@@ -101,7 +102,7 @@ if (isset($_GET['deletePurchaseID'])) {
                                     }
                                     $start_page = ($page - 1) * 5;
                                     $purchase = $con->query(
-                                        "SELECT p.*, s.SupplierID, s.SupplierName, st.StatusName, SUM(pu.BeforeDiscount) as BeforeDiscount, pay.Grand_total FROM purchase p 
+                                        "SELECT p.*, s.SupplierID, s.SupplierName, st.StatusName, SUM(pu.BeforeDiscount) as BeforeDiscount, SUM(pu.AfterDiscount) as AfterDiscount, pay.Grand_total FROM purchase p 
                                         INNER JOIN supplier s ON p.SupplierID = s.SupplierID
                                         INNER JOIN purchase_detail pu ON pu.PurchaseID = p.PurchaseID
                                         INNER JOIN status st ON p.StatusID = st.StatusID
@@ -138,6 +139,7 @@ if (isset($_GET['deletePurchaseID'])) {
                                             <td><?= "PUR" . $row['PurchaseID'] ?></td>
                                             <td><?= $row['SupplierName'] ?></td>
                                             <td><?= '$ ' . number_format($row['BeforeDiscount'], 2) ?></td>
+                                            <td><?= '$ ' . number_format($row['AfterDiscount'], 2) ?></td>
                                             <td><?= '$ ' . number_format($row['Grand_total'], 2) ?></td>
                                             <td><?= $row['StatusName'] ?></td>
                                         </tr>
@@ -165,6 +167,23 @@ if (isset($_GET['deletePurchaseID'])) {
                                                                 <button type="submit" name="deletePurchaseID" class="btn btn-outline-danger"><?= __('Delete') ?></button>
                                                             </div>
                                                         </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal View Purchase -->
+                                        <div class="modal fade" style="background-color: rgba(0, 0, 0, 0.685);" id="viewPurchase-<?= $row['PurchaseID'] ?>" tabindex="-1" aria-labelledby="viewPurchaseLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-center modal-xl" role="document">
+                                                <div class="modal-content content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5 text-white" id="viewPurchaseLabel"><?= __('Purchase Control') ?></h1>
+                                                        <div class="rotate-img">
+                                                            <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="40px" height="40px" data-bs-dismiss="modal" aria-label="Close" style="cursor: grab;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        eargegf
                                                     </div>
                                                 </div>
                                             </div>
@@ -204,6 +223,7 @@ if (isset($_GET['deletePurchaseID'])) {
 
         <!-- Loading to next page -->
         <div id="loading-container"></div>
+
 
     </div>
 

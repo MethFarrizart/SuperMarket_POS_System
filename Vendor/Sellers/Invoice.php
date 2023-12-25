@@ -58,7 +58,9 @@ if ($_SESSION['StaffID']) {
                 <?php
                 if (isset($_SESSION['StaffID']) && !empty($_SESSION['StaffID'])) {
                     $staffID = $_SESSION['StaffID'];
-                    $select = $con->query("SELECT O.InvoiceID, O.InvoiceDate, O.Seller FROM invoice O WHERE O.Seller = $staffID ORDER BY O.InvoiceID DESC");
+                    $select = $con->query("SELECT C.CustomerName, O.InvoiceID, O.InvoiceDate, O.Seller, O.CustomerID FROM invoice O 
+                    LEFT JOIN Customer C ON O.CustomerID = C.CustomerID
+                    WHERE O.Seller = $staffID ORDER BY O.InvoiceID DESC");
                     if (mysqli_num_rows($select) > 0) {
                         while ($row = $select->fetch_assoc()) {
                             $match = $row['InvoiceID'];
@@ -79,7 +81,9 @@ if ($_SESSION['StaffID']) {
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         <b class="fs-5"><?= __('Invoice-ID') ?>: #<?= $row['InvoiceID'] ?> </b> <br>
-                                        <b class="fs-5"><?= __('Order-Date') ?>: <?= $row['InvoiceDate'] ?> </b> <br><br>
+                                        <b class="fs-5"><?= __('Order-Date') ?>: <?= $row['InvoiceDate'] ?> </b> <br>
+                                        <b class="fs-5"><?= __('Customer') ?>: <?= $row['CustomerName'] ?> </b> <br><br>
+
                                     </div>
                                     <div>
                                         <!-- <button type="button" onclick="printPDF()" class="btn btn-primary p-2 fw-bold" style="width: 130px;"> <?= __('Print') ?> </button> -->

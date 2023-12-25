@@ -94,7 +94,8 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                             <td><?= __('Brand') ?> </td>
                             <td><?= __('Supplier') ?> </td>
                             <td><?= __('Quantity') ?> </td>
-                            <td><?= __('Unit Price') ?> </td>
+                            <td><?= __('Purchase Price') ?> </td>
+                            <td><?= __('Sell Price') ?> </td>
                             <td class="text-center"><?= __('Import On') ?> </td>
                             <td><?= __('Expired On') ?> </td>
                             <td><?= __('Status') ?> </td>
@@ -111,16 +112,28 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                         $page = 1;
                     }
                     $start_page = ($page - 1) * 10;
-                    $pro_qry = $con->query("SELECT c.CategoryName, b.BrandID, b.BrandName, s.StatusID, s.StatusName, sup.SupplierID, sup.SupplierName, p.* FROM product p
+                    $pro_qry = $con->query("SELECT u.UnitID, u.UnitName, c.CategoryName, b.BrandID, b.BrandName, s.StatusID, s.StatusName, sup.SupplierID, sup.SupplierName, p.* FROM product p
                                             INNER JOIN category c ON c.CategoryID = p.CategoryID 
                                             INNER JOIN status s ON s.StatusID = p.StatusID 
+                                            LEFT JOIN unit u ON u.UnitID = p.UnitID
                                             LEFT JOIN brand b ON b.BrandID = p.BrandID 
                                             LEFT JOIN Supplier Sup ON Sup.SupplierID = p.SupplierID 
+                                            -- GROUP BY p.ProductID
                                             ORDER BY p.ProductID DESC 
                                             LIMIT $start_page, $record_per_page");
                     while ($pro_row = $pro_qry->fetch_assoc()) {
                         $import_date = date_create($pro_row['Import_On']);
                         $expire_date = date_create($pro_row['Expired_On']);
+                        $pro_id = $pro_row['ProductID'];
+
+                        // $updateQty = $con->query("SELECT SUM(pu.Qty) AS TotalQty, p.* FROM purchase_detail pu 
+                        //                     INNER JOIN product p ON pu.ProductID = p.productID  WHERE p.ProductID = $pro_id
+                        //                     ");
+                        // $rowSellPrice = $updateQty->fetch_assoc();
+
+                        // $totalQty = $rowSellPrice['TotalQty'];
+
+                        // $updateTotalQty = $con->query("UPDATE Product SET Qty = $totalQty WHERE ProductID = $pro_id");
 
                         $cate_match = $pro_row['CategoryID'];
                         $brand_match = $pro_row['BrandID'];
@@ -195,7 +208,12 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                 <td class="text-start"><?= $pro_row['CategoryName'] ?> </td>
                                 <td class="text-start"> <?= $pro_row['BrandName'] ?> </td>
                                 <td class="text-start"> <?= $pro_row['SupplierName'] ?> </td>
-                                <td><?= $pro_row['Qty'] ?> </td>
+
+
+                                <td> <?= $pro_row['Qty'] . ' ' . $pro_row['UnitName']; ?> </td>
+
+
+                                <td><?= '$ ' . number_format($pro_row['PurchasePrice'], 2)  ?> </td>
                                 <td><?= '$ ' . number_format($pro_row['Price'], 2)  ?> </td>
                                 <td><?= date_format($import_date, "D-M-d-Y ~ H:i:s A");  ?> </td>
                                 <td>
@@ -378,11 +396,16 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
 
                                         <div class="col-12">
                                             <label for="" class="control-label"><?= __('Quantity') ?>: </label>
-                                            <input type="number" min="0" name="upd_qty" value="<?= $pro_row['Qty'] ?>" class="form-control qty">
+                                            <input type="number" value="<?= $pro_row['Qty'] ?>" class="form-control qty" readonly>
                                         </div>
 
                                         <div class="col-12">
-                                            <label for="" class="control-label"><?= __('Unit Price') ?>: </label>
+                                            <label for="" class="control-label"><?= __('Purchase Price') ?>: </label>
+                                            <input type="text" name="upd_purchasePrice" value="<?= $pro_row['PurchasePrice'] ?>" class="form-control">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="" class="control-label"><?= __('Sell Price') ?>: </label>
                                             <input type="text" name="upd_price" value="<?= $pro_row['Price'] ?>" class="form-control">
                                         </div>
 
@@ -509,25 +532,34 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                             <div id="insert_supplier"></div>
                         </div>
 
+                        <!-- Purchase Price -->
                         <div class="col-4">
-                            <label for="" class="control-label"><?= __('Quantity') ?>:</label>
-                            <input type="number" min="0" name="pro_qty" id="pro_qty" class="form-control qty" required>
+                            <label for="" class="control-label"><?= __('Purchase Price') ?>: </label>
+                            <input type="text" name="pro_purchasePrice" class="form-control" required>
                         </div>
 
+                        <!-- Sell Price -->
                         <div class="col-4">
-                            <label for="" class="control-label"><?= __('Unit Price') ?>:</label>
+                            <label for="" class="control-label"><?= __('Sell Price') ?>:</label>
                             <input type="text" name="pro_price" id="price" class="form-control" required>
                         </div>
                     </div>
 
 
                     <div class="row mt-3">
+                        <!-- Unit Name -->
+                        <div class="col-4">
+                            <label for="" class="control-label"><?= __('Unit Name') ?>:</label>
+                            <div id="insert_unit"></div>
+                        </div>
+
                         <div class="col-4">
                             <label for="" class="control-label"><?= __('Expired On') ?>:</label>
                             <input type="date" id="pro_expired" name="pro_expired" class="form-control expired">
                         </div>
 
 
+                        <!-- Status -->
                         <div class="col-4">
                             <label for="" class="control-label"><?= __('Status Type') ?>:</label>
                             <input type="hidden" id="pro_status" name="pro_status" class="form-control statusID" readonly>
@@ -536,6 +568,7 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                     </div>
 
                     <div class="row mt-5">
+                        <!-- Description -->
                         <div class="col-12">
                             <label for="" class="control-label"><?= __('Description') ?>:</label>
                             <textarea id="pro_descr" name="pro_descr" class="form-control" rows="10"></textarea>

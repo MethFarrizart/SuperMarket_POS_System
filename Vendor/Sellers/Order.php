@@ -10,6 +10,21 @@ if (!isset($_SESSION['FirstName']) && !isset($_SESSION['LastName'])) {
     }
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['customerName'])) {
+        $_SESSION['setCustomerName'] = $_POST['customerName'];
+    }
+}
+// $storeValue =  $_SESSION['setCustomerName'];
+
+//             $sql = $con->query("SELECT * FROM Customer WHERE CustomerID = $storeValue");
+//             $row = $sql->fetch_assoc();
+//             $convertName = $row['CustomerName'];
+
+$isSetorNot = isset($_SESSION['setCustomerName']) ? $_SESSION['setCustomerName'] : null;
+
+
+
 
 if (isset($_POST['add-to-cart'])) {
     if (isset($_SESSION['cart'])) {
@@ -30,7 +45,7 @@ if (isset($_POST['add-to-cart'])) {
                     'p_price' => $_POST['p_price'],
                     'p_img' => $_POST['p_img'],
                     'p_amount' => $_POST['p_amount'],
-                    'p_originQty' => $_POST['p_originQty']
+                    'p_originQty' => $_POST['p_originQty'],
                 );
                 $_SESSION['cart'][] = $item_array;
             }
@@ -51,7 +66,7 @@ if (isset($_POST['add-to-cart'])) {
                 'p_price' => $_POST['p_price'],
                 'p_img' => $_POST['p_img'],
                 'p_amount' => $_POST['p_amount'],
-                'p_originQty' => $_POST['p_originQty']
+                'p_originQty' => $_POST['p_originQty'],
             );
             $_SESSION['cart'][] = $item_array;
         }
@@ -84,7 +99,8 @@ if (isset($_POST['placeOrder'])) {
 
     // Insert one staff who has a seller position
     $staffId = $_SESSION['StaffID'];
-    $ins = $con->query("INSERT INTO `invoice`(`Seller`) VALUE($staffId)");
+    $customerID = $_SESSION['setCustomerName'];
+    $ins = $con->query("INSERT INTO `invoice`(`Seller`, `CustomerID`) VALUE($staffId, $customerID)");
 
 
     // Match ID of invoice : One invoiceID has many order products
@@ -119,6 +135,7 @@ if (isset($_POST['placeOrder'])) {
         // Insert information for order product
         $detail = $con->query("INSERT INTO `invoice_detail`(`InvoiceID`,`ProductID`, `CategoryID`, `Price`, `Amount`, `TotalCash`)VALUES('$invoice_detail','$pro_id', '$pro_cate', '$pro_price', '$pro_amount', '$p_total')");
         unset($_SESSION['cart']);
+        unset($_SESSION['setCustomerName']);
     }
 
 
@@ -151,6 +168,7 @@ if (isset($_POST['placeOrder'])) {
     <link rel="stylesheet" href="../Components/design.css?v=<?php echo time() ?>">
     <link rel="stylesheet" href="../../../Mart_POS_System/Components/design.css?v=<?php echo time() ?>">
     <link rel="shortcut icon" type="image" href="https://media.istockphoto.com/id/1275763595/vector/blue-flame-bird.jpg?s=612x612&w=0&k=20&c=R7Y3DJnYFIQM8TfOfM3smZpdEl4Ks3ku4mzEFqSDKVU=">
+    <link rel="stylesheet" href="../../../Mart_POS_System/plugin/virtualSelection/virtual-select.min.css">
 
 </head>
 
@@ -222,20 +240,28 @@ if (isset($_POST['placeOrder'])) {
             <?php
             include('../Components/Navbar.php');
             ?>
-            <div class="container-fluid" style="margin-top: 140px;">
+            <div class="container-fluid" style="margin-top: 120px;">
                 <!-- Digital Clock -->
-                <div class="text-end" style="margin-bottom: 20px">
-                    <strong class="fs-5" id="day"></strong> <strong>/</strong>
-                    <strong class="fs-5" id="month"></strong> -
-                    <strong class="fs-5" id="day_num"></strong> <strong>/</strong>
-                    <strong class="fs-5" id="year"></strong> <strong class="fs-5">~</strong>
-                    <strong class="fs-5" id="hrs"></strong> <strong class="fs-5">:</strong>
-                    <strong class="fs-5" id="min"></strong> <strong class="fs-5">:</strong>
-                    <strong class="fs-5" id="sec"></strong> <strong class="fs-5" id="time"></strong>
+                <div class="d-flex flex-column justify-content-end text-end">
+                    <div>
+                        <strong class="fs-5" id="day"></strong> <strong>/</strong>
+                        <strong class="fs-5" id="month"></strong> -
+                        <strong class="fs-5" id="day_num"></strong> <strong>/</strong>
+                        <strong class="fs-5" id="year"></strong> <strong class="fs-5">~</strong>
+                        <strong class="fs-5" id="hrs"></strong> <strong class="fs-5">:</strong>
+                        <strong class="fs-5" id="min"></strong> <strong class="fs-5">:</strong>
+                        <strong class="fs-5" id="sec"></strong> <strong class="fs-5" id="time"></strong>
+                    </div>
+
+
+                    <form method="post" action="">
+                        <div id="customer_comboBox"></div>
+                        <button type="submit" class="btn btn-success fw-bold">Submit</button>
+                    </form>
                 </div>
+
                 <div class="row">
                     <div class="col-2" style="margin-top: -60px;">
-
                         <!-- List Category to display the product -->
                         <div class="list-group list-tab scroll-container " style="width: 13%;" role="tablist">
                             <h5 class="pt-2"><?= __('Categories') ?> </h5>
@@ -254,11 +280,10 @@ if (isset($_POST['placeOrder'])) {
                                 <a class="tab_category text-white pt-3 fs-5 list-group-item list-group-item-action" id="list-<?= $cate_row['CategoryID'] ?>-list" data-toggle="list" href="#list-<?= $cate_row['CategoryID'] ?>" role="tab" aria-controls="<?= $cate_row['CategoryID'] ?>"><?= $cate_row['CategoryName'] ?></a>
                             <?php } ?>
                         </div>
-
                     </div>
 
                     <!-- Display product through category -->
-                    <div class="col-10 ">
+                    <div class="col-10 mt-5">
                         <div class="tab-content" id="nav-tabContent">
                             <?php
                             include('../Components/CategoryOne.php');
@@ -268,7 +293,6 @@ if (isset($_POST['placeOrder'])) {
                             include('../Components/OtherCategory.php');
                             ?>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -286,6 +310,20 @@ if (isset($_POST['placeOrder'])) {
             </div>
         </div>
         <div class="offcanvas-body">
+            <div>
+                <?= __("Sold To") . ':'  ?>
+                <?php
+
+                if (isset($isSetorNot)) {
+                    $setName = $con->query("SELECT CustomerName FROM customer WHERE customerID = $isSetorNot");
+                    while ($customerName = $setName->fetch_assoc()) {
+                        echo $customerName['CustomerName']; // Add this line to display the customer name
+                    }
+                }
+
+                ?>
+            </div>
+
             <?php
             if (!empty($_SESSION['cart'])) {
                 $total = 0;
@@ -300,6 +338,7 @@ if (isset($_POST['placeOrder'])) {
                     //total amount as Riel Currency symbol 
                     $totalKhmer =  $total * 4100;
             ?>
+
                     <div class="d-flex mt-5 justify-content-between">
                         <div class="d-flex gap-3">
                             <img style="border-radius: 20px; width: 100px; height: 100px" src="../../Images/<?= $value['p_img'] ?>" alt="">
@@ -403,6 +442,32 @@ if (isset($_POST['placeOrder'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="../../../Mart_POS_System/Action.js"></script>
+<script src="../../../Mart_POS_System/plugin/virtualSelection/virtual-select.min.js"></script>
+
+<script>
+    // Customer Combobox
+    VirtualSelect.init({
+        ele: '#customer_comboBox',
+        search: true,
+        placeholder: 'Select Customer',
+        hideClearButton: true,
+        maxWidth: '10%',
+        name: 'customerName',
+
+        options: [
+            <?php
+            $result = $con->query("SELECT * FROM customer");
+            while ($row = $result->fetch_assoc()) {
+            ?> {
+                    label: '<?= $row['CustomerName'] ?>',
+                    value: <?= $row['CustomerID'] ?>
+                },
+
+            <?php } ?>
+        ],
+    });
+</script>
+
 
 <script>
     $(document).ready(function() {

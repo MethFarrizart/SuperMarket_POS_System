@@ -20,34 +20,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $selectedProducts = json_decode($_POST['queryProducts'], true);
 
+    // print_r( $selectedProducts);
+
     if ($purchase_id) {
         foreach ($selectedProducts as $item) {
-            $price = $item['price'];
+            $purchasePrice = $item['purchasePrice'];
             $qty   = $item['qty'];
             $discount = $item['discount'];
             $productID = $item['productID'];
             $beforeDiscount = $item['beforeDiscount'];
+            $afterDiscount = $item['afterDiscount'];
             $subTotal = $item['subTotal'];
             $grandTotal = $item['grandTotal'];
 
+
             // Insert purchase_detail information into the 'purchase_detail' table
-            $ins_purchase_detail = $con->query("INSERT INTO purchase_detail (PurchaseID, ProductID, Qty, Price, BeforeDiscount, Discount) 
-                VALUES ('$purchase_id', '$productID', '$qty', '$price', '$beforeDiscount', '$discount')");
+            $ins_purchase_detail = $con->query("INSERT INTO purchase_detail (PurchaseID, ProductID, Qty, Price, BeforeDiscount, Discount, AfterDiscount) 
+                VALUES ('$purchase_id', '$productID', '$qty', '$purchasePrice', '$beforeDiscount', '$discount', '$afterDiscount')");
 
-            $ins_purchase_payment = $con->query("INSERT INTO purchasepayment (PurchaseID, Grand_total)
-VALUES ('$purchase_id', '$grandTotal')");
-
-            $product_query = $con->query("SELECT Qty FROM Product WHERE ProductID = $productID");
-            $product_row = $product_query->fetch_assoc();
-
-            $purchase_query = $con->query("SELECT SUM(QTY) as totalQty FROM purchase_detail WHERE ProductID = '$productID'");
-            $purchase_row = $purchase_query->fetch_assoc();
-
-            $totalQty = $product_row['Qty'] + $purchase_row['totalQty'];
-
-            $con->query("UPDATE Product SET Qty = $totalQty WHERE ProductID = $productID");
+            // Update product quantity
+            $con->query("UPDATE product SET Qty = Qty + '$qty' WHERE ProductID = '$productID'");
         }
 
+        $con->query("INSERT INTO purchasepayment (PurchaseID, Grand_total) VALUES ('$purchase_id', '$grandTotal')");
 
 
 
@@ -140,6 +135,7 @@ VALUES ('$purchase_id', '$grandTotal')");
                                                 <th><?= __("Price") ?></th>
                                                 <th><?= __("Discount") ?></th>
                                                 <th class="text-end"><?= __("Before Discount") ?></th>
+                                                <th class="text-end"><?= __("After Discount") ?></th>
                                                 <th class="text-end"><?= __("Sub Total") . ' (' .  __("With Tax") . ' 15%' . ')' ?></th>
                                             </tr>
                                         </thead>
@@ -150,7 +146,8 @@ VALUES ('$purchase_id', '$grandTotal')");
                                 </div>
 
                                 <div class="text-end mt-5">
-                                    <!-- <h6><?= __("Total Discount") ?>: </h6> -->
+                                    <h6><?= __("Total Before Discount") ?>: $ <span onkeyup="calculateSum()" class="totalBeforeDiscount"> </span> </h6>
+                                    <h6><?= __("Total After Discount") ?>: $ <span onkeyup="calculateSum()" class="totalAfterDiscount"> </span> </h6>
                                     <h6><?= __("Grand Total") ?>: $ <span onkeyup="calculateSum()" class="grandTotal"> </span> </h6>
                                 </div>
 
@@ -237,9 +234,12 @@ VALUES ('$purchase_id', '$grandTotal')");
             <?php
             $result = $con->query("SELECT * FROM product");
             while ($row = $result->fetch_assoc()) {
+                $id =  $row['ProductName'];
+                $pu_price = $row['PurchasePrice'];
             ?> {
-                    label: '<?= $row['ProductName'] ?>',
-                    value: <?= $row['ProductID'] ?>
+                    label: '<?= $id ?>',
+                    value: <?= $row['ProductID'] ?>,
+                    customData: <?= $pu_price ?>
                 },
             <?php } ?>
         ],
@@ -249,16 +249,21 @@ VALUES ('$purchase_id', '$grandTotal')");
     // Push Product to table to sell
     let selectedProducts = [];
     let selectedProductID = [];
+    let sellPriceSelected = [];
+
     let queryItem = document.querySelector('#product_selection')
     queryItem.addEventListener('change', function() {
+
         let selectedValue = this.value;
         queryItem.options.forEach(item => {
             if (item.value === selectedValue) {
-                selectedProducts.push(item.label)
-                selectedProductID.push(item.value)
+                selectedProducts.push(item.label);
+                selectedProductID.push(item.value);
+                sellPriceSelected.push(item.customData);
             }
         })
-        updateTable()
+
+        updateTable();
     })
 
 
@@ -269,31 +274,36 @@ VALUES ('$purchase_id', '$grandTotal')");
         let inputValues = [];
 
         inputValues = selectedProducts.map((product, i) => {
+
             let qtyInput = document.querySelector(`input[name="qtyValue"][data-index="${i}"]`);
-            let priceInput = document.querySelector(`input[name="priceValue"][data-index="${i}"]`);
+            let priceInput = document.querySelector(`input[name="purchasePrice"][data-index="${i}"]`);
             let discountInput = document.querySelector(`input[name="discountValue"][data-index="${i}"]`);
 
             const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
             const price = priceInput ? parseFloat(priceInput.value) || 0 : 0;
             const discount = discountInput ? parseInt(discountInput.value) || 0 : 0;
-            var beforeDiscountInput = qty * price
+            let beforeDiscountInput = qty * price
 
-            var afterDiscountInput = qty * price * discount / 100;
-            var subTotalInput = (qty * price) - afterDiscountInput;
-            var subTotalWithTax = (subTotalInput + (subTotalInput * 15 / 100))
+            let afterDiscountInput = qty * price * discount / 100;
+            let subTotalInput = (qty * price) - afterDiscountInput;
+            let subTotalWithTax = (subTotalInput + (subTotalInput * 15 / 100))
 
 
             // Calculate grandTotal and update the inputValues array
-            var grandTotalInput = 0;
+            let grandTotalInput = 0;
             grandTotalInput += parseFloat(subTotalWithTax) || 0;
+
+            let afterDiscountValue = 0
+            afterDiscountValue += parseFloat(subTotalInput) || 0;
 
 
             return {
                 productID: selectedProductID[i],
                 qty: qtyInput ? qtyInput.value : '',
-                price: priceInput ? priceInput.value : '',
+                purchasePrice: sellPriceSelected[i],
                 discount: discountInput ? discountInput.value : '',
                 beforeDiscount: beforeDiscountInput.toFixed(2),
+                afterDiscount: afterDiscountValue.toFixed(2),
                 subTotal: subTotalWithTax.toFixed(2),
                 grandTotal: grandTotalInput.toFixed(2)
             };
@@ -316,7 +326,7 @@ VALUES ('$purchase_id', '$grandTotal')");
                 `<div class="pt-2"> ${selectedProducts[i]} </div>` +
                 `<input name="productID" data-index="${i}" type="hidden" value="${selectedProductID[i]}">`;
 
-            // Qty value="${inputValues[i].qty}"
+            // Qty
             cell = newRow.insertCell(2);
             cell.innerHTML = `
             <div class="d-flex gap-3">
@@ -324,11 +334,11 @@ VALUES ('$purchase_id', '$grandTotal')");
             </div>
             `;
 
-            // Unit Price
+            // Purchase Price
             cell = newRow.insertCell(3);
             cell.innerHTML = `
-            <input name="priceValue" data-index="${i}" onkeyup="calculateSum(${i})"  value="${inputValues[i].price}" style="border-radius: 25px" type="text" class="priceValue shadow p-1 text-center h-100">
-            `;
+            <input name="purchasePrice" data-index="${i}" onkeyup="calculateSum(${i})"  value="${sellPriceSelected[i]}" style="border-radius: 25px" type="text" class="purchasePrice shadow p-1 text-center h-100">
+            $`;
 
             // Discount
             cell = newRow.insertCell(4);
@@ -343,8 +353,16 @@ VALUES ('$purchase_id', '$grandTotal')");
             </div>
            `;
 
-            // SubTotal Amount
+            // After Discount
             cell = newRow.insertCell(6);
+            cell.innerHTML = `
+            <div class="pt-2 text-end">
+                $ <span class="afterDiscount_${i}"> 0 </span>
+            </div>
+           `;
+
+            // SubTotal Amount
+            cell = newRow.insertCell(7);
             cell.innerHTML = `
             <div class="pt-2 text-end">
                 $ <span class="totalSum_${i}"> 0 </span>
@@ -361,7 +379,7 @@ VALUES ('$purchase_id', '$grandTotal')");
             });
         });
 
-        document.querySelectorAll('.priceValue').forEach(function(priceInput, index) {
+        document.querySelectorAll('.purchasePrice').forEach(function(priceInput, index) {
             priceInput.addEventListener('input', function() {
                 updateInputValue(index, 'price', priceInput.value);
             });
@@ -378,10 +396,12 @@ VALUES ('$purchase_id', '$grandTotal')");
             if (!inputValues[index]) {
                 inputValues[index] = {
                     productID: selectedProductID[index],
+                    purchasePrice: sellPriceSelected[index],
                     qty: '',
                     price: '',
                     discount: '',
                     beforeDiscount: '',
+                    afterDiscount: '',
                     subTotal: '',
                     grandTotal: ''
                 };
@@ -389,15 +409,17 @@ VALUES ('$purchase_id', '$grandTotal')");
             inputValues[index][key] = value;
 
             const qty = parseInt(document.querySelector(`input[name="qtyValue"][data-index="${index}"]`).value) || 0;
-            const price = parseFloat(document.querySelector(`input[name="priceValue"][data-index="${index}"]`).value) || 0;
+            const price = parseFloat(document.querySelector(`input[name="purchasePrice"][data-index="${index}"]`).value) || 0;
             const discount = parseInt(document.querySelector(`input[name="discountValue"][data-index="${index}"]`).value) || 0;
 
-            var beforeDiscount = qty * price
+            let beforeDiscount = qty * price
             inputValues[index]['beforeDiscount'] = beforeDiscount.toFixed(2)
 
-            var afterDiscount = qty * price * discount / 100;
-            var subTotal = (qty * price) - afterDiscount;
-            var subTotalWithTax = subTotal + (subTotal * 15 / 100)
+            let afterDiscount = qty * price * discount / 100;
+            let subTotal = (qty * price) - afterDiscount;
+            let subTotalWithTax = subTotal + (subTotal * 15 / 100)
+
+            inputValues[index]['afterDiscount'] = subTotal.toFixed(2);
             inputValues[index]['subTotal'] = subTotalWithTax.toFixed(2);
 
 
@@ -422,24 +444,34 @@ VALUES ('$purchase_id', '$grandTotal')");
     // Calculate subtotal
     function calculateSum(index) {
         let tableBody = document.getElementById("selectedProductsTableBody");
-        var grandTotal = 0;
+        let grandTotal = 0;
+        let totalBeforeDiscount = 0;
+        let totalAfterDiscount = 0;
         for (let i = 0; i < tableBody.rows.length; i++) {
             const qtyInput = document.querySelector(`input[name="qtyValue"][data-index="${i}"]`);
-            const priceInput = document.querySelector(`input[name="priceValue"][data-index="${i}"]`);
+            const priceInput = document.querySelector(`input[name="purchasePrice"][data-index="${i}"]`);
             const discountInput = document.querySelector(`input[name="discountValue"][data-index="${i}"]`);
 
             const qty = parseInt(qtyInput.value) || 0;
             const price = parseFloat(priceInput.value) || 0;
             const discount = parseInt(discountInput.value) || 0;
 
+            // Before Discount
             const beforeDiscount = qty * price
+            totalBeforeDiscount += beforeDiscount
             document.getElementsByClassName(`beforeDiscount_${i}`)[0].innerHTML = beforeDiscount.toFixed(2)
+            document.querySelector('.totalBeforeDiscount').innerHTML = totalBeforeDiscount.toFixed(2)
 
-            var afterDiscount = qty * price * discount / 100;
-            var subTotal = (qty * price) - afterDiscount;
+            // After Discount
+            let afterDiscount = qty * price * discount / 100;
+            let subTotal = (qty * price) - afterDiscount;
+            totalAfterDiscount += subTotal
+            document.getElementsByClassName(`afterDiscount_${i}`)[0].innerHTML = subTotal.toFixed(2)
+            document.querySelector('.totalAfterDiscount').innerHTML = totalAfterDiscount.toFixed(2)
+
 
             // After calculate subTotal, we will calculate with tax = 15%
-            var subTotalWithTax = subTotal + (subTotal * 15 / 100)
+            let subTotalWithTax = subTotal + (subTotal * 15 / 100)
             document.getElementsByClassName(`totalSum_${i}`)[0].innerHTML = subTotalWithTax.toFixed(2);
 
             grandTotal += subTotalWithTax
@@ -451,6 +483,8 @@ VALUES ('$purchase_id', '$grandTotal')");
     // Remove product selection
     function removeProduct(index) {
         selectedProducts.splice(index, 1);
+        selectedProductID.splice(index, 1);
+        sellPriceSelected.splice(index, 1);
         updateTable();
     }
 </script>
@@ -494,7 +528,5 @@ VALUES ('$purchase_id', '$grandTotal')");
         }, 2000);
     };
 </script>
-
-
 
 </html>
