@@ -171,7 +171,7 @@ if (isset($_GET['del_unitId'])) {
                                                 </div>
                                             </td>
 
-                                            <td><?= $unit_row['UnitID'] ?> </td>
+                                            <td><?= 'UNIT' . $unit_row['UnitID'] ?> </td>
                                             <td><?= $unit_row['UnitName'] ?> </td>
                                             <td><?= $unit_row['Abbreviation'] ?> </td>
                                         </tr>

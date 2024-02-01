@@ -126,18 +126,10 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                         $expire_date = date_create($pro_row['Expired_On']);
                         $pro_id = $pro_row['ProductID'];
 
-                        // $updateQty = $con->query("SELECT SUM(pu.Qty) AS TotalQty, p.* FROM purchase_detail pu 
-                        //                     INNER JOIN product p ON pu.ProductID = p.productID  WHERE p.ProductID = $pro_id
-                        //                     ");
-                        // $rowSellPrice = $updateQty->fetch_assoc();
-
-                        // $totalQty = $rowSellPrice['TotalQty'];
-
-                        // $updateTotalQty = $con->query("UPDATE Product SET Qty = $totalQty WHERE ProductID = $pro_id");
-
                         $cate_match = $pro_row['CategoryID'];
                         $brand_match = $pro_row['BrandID'];
                         $supplier_match = $pro_row['SupplierID'];
+                        $unit_match = $pro_row['UnitID'];
                     ?>
                         <tbody>
                             <tr class="text-center h6" style="line-height: 30px;">
@@ -161,31 +153,6 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                                 <?= __('Delete') ?>
                                             </button>
                                         </div>
-
-
-                                        <!-- <button align="center" style="margin-top: -3px;" class="show-details-btn btn btn-secondary fs-6" data-details-id="<?= $pro_row['ProductID'] ?>" type="button">
-                                            <i class="fa-solid fa-gear"></i>
-                                        </button>
-
-                                        <div id="<?= $pro_row['ProductID'] ?>" class="details">
-
-                                            <div class="d-flex flex-column w-100 gap-2">
-                                                <button type="button" class="btn text-white p-2 w-100 watchBg" data-bs-toggle="modal" data-bs-target="#viewpro-<?= $pro_row['ProductID'] ?>" aria-controls="viewpro">
-                                                    <i class="fa fa-eye" aria-hidden="true" style="color: yellow"></i>
-                                                    <?= __('View') ?>
-                                                </button>
-                                                <button type="button" class="btn text-white p-2 w-100" style="background-color: #1D9A29;" data-bs-toggle="offcanvas" data-bs-target="#editpro-<?= $pro_row['ProductID'] ?>" aria-controls="editpro">
-                                                    <i class="fa-solid fa-pen-to-square" style="color: yellow;"></i>
-                                                    <?= __('Edit') ?>
-                                                </button>
-
-                                                <button type="button" class="btn text-white p-2 w-100 " style="background-color: red;" data-bs-toggle="modal" data-bs-target="#deletepro-<?= $pro_row['ProductID'] ?>" aria-controls="deletepro">
-                                                    <i class="fa-sharp fa-solid fa-trash" style="color: yellow;"></i>
-                                                    <?= __('Delete') ?>
-                                                </button>
-                                            </div>
-
-                                        </div> -->
                                     </div>
                                 </td>
 
@@ -235,7 +202,7 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                     $new_status = $con->query("UPDATE `product` SET `StatusID` = 4 WHERE `ProductID` = $get_proid");
                                     if ($new_status === true) {
                                     ?>
-                                        <td><?= $pro_row['StatusName'] ?> <div class=" spinner-grow spinner-grow-sm bg-danger"></div>
+                                        <td><?= 'ហួសកំណត់' ?> <div class="position-absolute spinner-grow spinner-grow-sm bg-danger"></div>
                                         </td>
                                     <?php } ?>
 
@@ -248,7 +215,7 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                         $new_status = $con->query("UPDATE `product` SET `StatusID` = 3 WHERE `ProductID` = $get_proid");
                                         if ($new_status === true) {
                                         ?>
-                                            <td class="h5"><span class="text-bg-danger badge rounded-pill"><?= $pro_row['StatusName'] ?></span> </td>
+                                            <td><span class="text-bg-danger badge rounded-pill"><?= 'លក់អស់ពីស្តុក' ?></span> </td>
                                         <?php } ?>
 
                                     <?php } else if ($pro_row['Qty'] <= 5) { ?>
@@ -258,7 +225,7 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                         $new_status = $con->query("UPDATE `product` SET `StatusID` = 2 WHERE `ProductID` = $get_proid");
                                         if ($new_status === true) {
                                         ?>
-                                            <td class="h5"><span class="text-white bg-warning badge rounded-pill"><?= $pro_row['StatusName'] ?></span> </td>
+                                            <td><span class="text-white bg-warning badge rounded-pill"><?= 'ជិតលក់អស់' ?></span> </td>
                                         <?php } ?>
 
                                     <?php } else if ($pro_row['Qty'] > 0 || empty($pro_row['Expired_On'])) { ?>
@@ -268,7 +235,7 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                         $new_status = $con->query("UPDATE `product` SET `StatusID` = 1 WHERE `ProductID` = $get_proid");
                                         if ($new_status === true || date_format($expire_date, "Y-M-d") == '-0001-Nov-30') {
                                         ?>
-                                            <td class="h5"><span class="text-bg-success badge rounded-pill"><?= $pro_row['StatusName'] ?></span> </td>
+                                            <td><span class="text-bg-success badge rounded-pill"><?= 'មានក្នុងស្តុក' ?></span> </td>
                                         <?php } ?>
                                     <?php } ?>
                                 <?php } ?>
@@ -394,10 +361,32 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                         </div>
 
 
-                                        <div class="col-12">
+                                        <div class="col-6">
+                                            <label for="" class="control-label"><?= __('Unit') ?>: </label>
+                                            <select class="custom-select w-100 p-2" name="upd_proUnit">
+                                                <?php
+                                                $qry = $con->query("SELECT * FROM unit");
+                                                while ($unit = $qry->fetch_assoc()) {
+                                                ?>
+                                                    <?php
+                                                    if ($unit['UnitID'] == $unit_match) {
+                                                    ?>
+                                                        <option selected value="<?= $unit['UnitID'] ?>">
+                                                            <?= $unit['UnitName'] ?></option>
+
+                                                    <?php } else { ?>
+                                                        <option value="<?= $unit['UnitID'] ?>"><?= $unit['UnitName'] ?>
+                                                        </option>
+
+                                                    <?php } ?>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+
+                                        <!-- <div class="col-12">
                                             <label for="" class="control-label"><?= __('Quantity') ?>: </label>
                                             <input type="number" value="<?= $pro_row['Qty'] ?>" class="form-control qty" readonly>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-12">
                                             <label for="" class="control-label"><?= __('Purchase Price') ?>: </label>
@@ -409,10 +398,10 @@ include_once('../../../Mart_POS_System/Translate/lang.php');
                                             <input type="text" name="upd_price" value="<?= $pro_row['Price'] ?>" class="form-control">
                                         </div>
 
-                                        <div class="col-12">
+                                        <!-- <div class="col-12">
                                             <label for="" class="control-label"><?= __('Import On') ?>: </label>
                                             <input type="datetime" value="<?= $pro_row['Import_On'] ?>" class="form-control" readonly>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-12">
                                             <label for="" class="control-label"><?= __('Expired On') ?>: </label>

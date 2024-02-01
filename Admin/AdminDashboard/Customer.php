@@ -141,14 +141,14 @@ if (isset($_GET['delete_customer'])) {
 
                                 <?php
                                 // Reload data by pagination
-                                $record_per_page = 5;
+                                $record_per_page = 10;
 
                                 if (isset($_GET['page'])) {
                                     $page = $_GET['page'];
                                 } else {
                                     $page = 1;
                                 }
-                                $start_page = ($page - 1) * 5;
+                                $start_page = ($page - 1) * 10;
 
 
                                 $qry_customer = $con->query("SELECT * FROM customer ORDER BY CustomerID DESC LIMIT $start_page, $record_per_page");

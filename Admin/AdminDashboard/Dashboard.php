@@ -124,9 +124,33 @@ include('../../Connection/Connect.php');
 
                                     <div>
                                         <?php
-                                        $expense = $con->query("SELECT SUM(Grand_total) AS grandTotal FROM purchasepayment");
+                                        $expense = $con->query("SELECT SUM(Grand_total) AS grandTotal FROM purchasepayment WHERE PaymentStatus = 8");
                                         while ($expenseTotal = $expense->fetch_assoc()) {
                                             $result = $expenseTotal['grandTotal']
+                                        ?>
+                                            <span class="text-white h6 fw-bold">
+                                                <?= '$ ' . number_format($result, 2)  ?>
+                                            </span>
+
+                                        <?php  } ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Total purchase debt -->
+                            <div class="d-flex gap-3 ps-3 mt-3">
+                                <img style="width: 45px; height: 48px" src="https://cdn1.iconfinder.com/data/icons/loans-soft-fill/60/019_-_Finance_Accounting-loans-money-512.png" alt="">
+
+                                <div class="d-flex flex-column">
+                                    <h5 class="text-white ">
+                                        <?= __('Total Purchase Debt') ?>
+                                    </h5>
+
+                                    <div>
+                                        <?php
+                                        $expense = $con->query("SELECT SUM(Grand_total) AS totalPurchaseDebt FROM purchasepayment WHERE PaymentStatus = 9");
+                                        while ($expenseTotal = $expense->fetch_assoc()) {
+                                            $result = $expenseTotal['totalPurchaseDebt']
                                         ?>
                                             <span class="text-white h6 fw-bold">
                                                 <?= '$ ' . number_format($result, 2)  ?>
@@ -182,9 +206,36 @@ include('../../Connection/Connect.php');
 
                                     <div>
                                         <?php
-                                        $income = $con->query("SELECT SUM(GrandTotal) AS grandTotal FROM payment");
+                                        $income = $con->query("SELECT SUM(TotalPaid) AS grandTotal FROM payment");
                                         while ($incomeTotal = $income->fetch_assoc()) {
                                             $result = $incomeTotal['grandTotal']
+                                        ?>
+                                            <div class="text-white h6 fw-bold">
+                                                <span>$ </span>
+                                                <span>
+                                                    <?= number_format($result, 2)  ?>
+                                                </span>
+                                            </div>
+                                        <?php  } ?>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Total Sale Debt -->
+                            <div class="d-flex gap-3 ps-3 mt-3">
+                                <img style="width: 45px; height: 48px" src="https://cdn1.iconfinder.com/data/icons/loans-soft-fill/60/048_-_Credit_History-loans-card-money-512.png" alt="">
+
+                                <div class="d-flex flex-column">
+                                    <h5 class="text-white ">
+                                        <?= __('Total Sale Debt') ?>
+                                    </h5>
+
+                                    <div>
+                                        <?php
+                                        $income = $con->query("SELECT SUM(TotalDebt) AS totalSaleDebt FROM payment");
+                                        while ($incomeTotal = $income->fetch_assoc()) {
+                                            $result = $incomeTotal['totalSaleDebt']
                                         ?>
                                             <div class="text-white h6 fw-bold">
                                                 <span>$ </span>
@@ -824,7 +875,7 @@ include('../../Connection/Connect.php');
                                                     <img src="../../Images/<?php echo $row_proExpire['Image'] ?>" width="50px" height="50px" alt="">
                                                 <?php } else { ?>
                                                     <div align=center>
-                                                        <img class="w-50" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Blue_question_mark_icon.svg/1200px-Blue_question_mark_icon.svg.png" alt="">
+                                                        <img width="50px" height="50px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Blue_question_mark_icon.svg/1200px-Blue_question_mark_icon.svg.png" alt="">
                                                     </div>
                                                 <?php } ?>
                                             </td>
@@ -1038,45 +1089,9 @@ include('../../Connection/Connect.php');
 
 
 
-
-
-
-
 <!-- Google-Chartjs -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-
-<!-- Yearly Incomes -->
-<script>
-    google.charts.load('current', {
-        'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-        var datas = google.visualization.arrayToDataTable([
-            ['Year', 'Yearly Income'],
-            <?php
-            $select = $con->query("SELECT O.InvoiceID, YEAR(O.InvoiceDate) AS YEAR , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
-            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY YEAR");
-
-            while ($select_row = $select->fetch_assoc()) {
-                $day = $select_row['YEAR'];
-                $total = $select_row['Total'];
-            ?>['<?= $day ?>', <?= $total ?>],
-
-            <?php  } ?>
-        ]);
-
-        var options = {
-            colors: ['green'],
-        };
-        // ('year_sale')
-        var chart = new google.charts.Bar(document.getElementById('year_sale'));
-
-        chart.draw(datas, google.charts.Bar.convertOptions(options));
-    }
-</script>
 
 
 <!-- Annual Expense -->
@@ -1090,8 +1105,10 @@ include('../../Connection/Connect.php');
         var datas = google.visualization.arrayToDataTable([
             ['Year', 'Annual Expense'],
             <?php
+
+            // Total Only Complete Paid
             $select = $con->query("SELECT O.PurchaseID, YEAR(O.PurchaseDate) AS YEAR , SUM(Pay.Grand_total) AS Total , Pay.PurchaseID FROM purchasepayment Pay
-            INNER JOIN Purchase O ON O.PurchaseID = Pay.PurchaseID GROUP BY YEAR
+            INNER JOIN purchase O ON O.PurchaseID = Pay.PurchaseID  WHERE pay.PaymentStatus = 8 GROUP BY YEAR
             ");
 
             while ($select_row = $select->fetch_assoc()) {
@@ -1129,8 +1146,11 @@ include('../../Connection/Connect.php');
         var datas = google.visualization.arrayToDataTable([
             ['Month', 'Monthly Expense'],
             <?php
+
+            // Total Only Complete Paid
             $select = $con->query("SELECT p.PurchaseID, DATE_FORMAT(p.PurchaseDate, '%M / %Y') AS MONTH , SUM(pay.Grand_total) AS Total , pay.PurchaseID FROM purchasepayment pay
             INNER JOIN Purchase p ON p.PurchaseID = pay.PurchaseID 
+            WHERE pay.PaymentStatus = 8
             GROUP BY MONTH ORDER BY p.PurchaseDate");
 
             while ($select_row = $select->fetch_assoc()) {
@@ -1157,6 +1177,38 @@ include('../../Connection/Connect.php');
 </script>
 
 
+<!-- Annual Incomes -->
+<script>
+    google.charts.load('current', {
+        'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var datas = google.visualization.arrayToDataTable([
+            ['Year', 'Yearly Income'],
+            <?php
+            $select = $con->query("SELECT O.InvoiceID, YEAR(O.InvoiceDate) AS YEAR , SUM(P.TotalPaid) AS Total , P.InvoiceID FROM payment P
+            INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY YEAR");
+
+            while ($select_row = $select->fetch_assoc()) {
+                $day = $select_row['YEAR'];
+                $total = $select_row['Total'];
+            ?>['<?= $day ?>', <?= $total ?>],
+
+            <?php  } ?>
+        ]);
+
+        var options = {
+            colors: ['green'],
+        };
+        // ('year_sale')
+        var chart = new google.charts.Bar(document.getElementById('year_sale'));
+
+        chart.draw(datas, google.charts.Bar.convertOptions(options));
+    }
+</script>
+
 <!-- Monthly Incomes -->
 <script>
     google.charts.load('current', {
@@ -1168,7 +1220,7 @@ include('../../Connection/Connect.php');
         var datas = google.visualization.arrayToDataTable([
             ['Year', 'Monthly Incomes'],
             <?php
-            $select = $con->query("SELECT O.InvoiceID, DATE_FORMAT(O.InvoiceDate,  '%M / %Y') AS MONTH , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
+            $select = $con->query("SELECT O.InvoiceID, DATE_FORMAT(O.InvoiceDate,  '%M / %Y') AS MONTH , SUM(P.TotalPaid) AS Total , P.InvoiceID FROM payment P
             INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY MONTH ORDER BY O.InvoiceDate");
 
             while ($select_row = $select->fetch_assoc()) {
@@ -1206,7 +1258,7 @@ include('../../Connection/Connect.php');
         var datas = google.visualization.arrayToDataTable([
             ['Year', 'Daily Incomes'],
             <?php
-            $select = $con->query("SELECT O.InvoiceID, Date(O.InvoiceDate) AS Day , SUM(P.GrandTotal) AS Total , P.InvoiceID FROM payment P
+            $select = $con->query("SELECT O.InvoiceID, Date(O.InvoiceDate) AS Day , SUM(P.TotalPaid) AS Total , P.InvoiceID FROM payment P
             INNER JOIN invoice O ON O.InvoiceID = P.InvoiceID GROUP BY Day");
 
             while ($select_row = $select->fetch_assoc()) {

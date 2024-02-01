@@ -1,5 +1,5 @@
 <?php
-sleep(2);
+// sleep(2);
 include('../../Connection/Connect.php');
 require('../../../Mart_POS_System/Translate/lang.php');
 
@@ -80,6 +80,7 @@ if (isset($_POST['upd_pro'])) {
     $upd_prodescr = $_POST['upd_prodescr'];
     $upd_probrand = $_POST['upd_probrand'];
     $upd_proSupplier = $_POST['upd_proSupplier'];
+    $upd_proUnit = $_POST['upd_proUnit'];
 
     $upd_proimg    = $_FILES['upd_proimg']['name'];
     $upd_tmpimg    = $_FILES['upd_proimg']['tmp_name'];
@@ -91,6 +92,7 @@ if (isset($_POST['upd_pro'])) {
                     `CategoryID`='$upd_procate',
                     `BrandID`='$upd_probrand',
                     `SupplierID`='$upd_proSupplier',
+                    `UnitID` = '$upd_proUnit',
                     `PurchasePrice`='$upd_purchasePrice',
                     `Price`='$upd_price',
                     `Image`='$upd_proimg',
@@ -320,8 +322,17 @@ if (isset($_POST['upd_pro'])) {
 
         options: [
             <?php
-            $result = $con->query("SELECT * FROM status");
+            $result = $con->query("SELECT * FROM status WHERE StatusID < 5");
             while ($row = $result->fetch_assoc()) {
+                if ($row['StatusID'] == 1) {
+                    $row['StatusName'] = 'មានក្នុងស្តុក';
+                } else if ($row['StatusID'] == 2) {
+                    $row['StatusName'] = 'លក់ជិតអស់';
+                } else if ($row['StatusID'] == 3) {
+                    $row['StatusName'] = 'លក់អស់ពីស្តុក';
+                } else if ($row['StatusID'] == 4) {
+                    $row['StatusName'] = 'ហួសកំណត់';
+                }
             ?> {
                     label: '<?= $row['StatusName'] ?>',
                     value: <?= $row['StatusID'] ?>

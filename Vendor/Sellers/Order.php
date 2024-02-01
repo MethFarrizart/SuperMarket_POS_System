@@ -100,8 +100,8 @@ if (isset($_POST['placeOrder'])) {
     // Insert one staff who has a seller position
     $staffId = $_SESSION['StaffID'];
     $customerID = $_SESSION['setCustomerName'];
-    $ins = $con->query("INSERT INTO `invoice`(`Seller`, `CustomerID`) VALUE($staffId, $customerID)");
-
+    $orderDate = $_POST['orderDate'];
+    $ins = $con->query("INSERT INTO `invoice`(`InvoiceDate`, `Seller`, `CustomerID`) VALUES('$orderDate', '$staffId', '$customerID')");
 
     // Match ID of invoice : One invoiceID has many order products
     $select = $con->query("SELECT * FROM invoice");
@@ -143,13 +143,17 @@ if (isset($_POST['placeOrder'])) {
     $invoice_detail = $match;
 
     // Store cash as Dollar and Riel currency 
-    $grandTotal = $_POST['grandTotal'];
-    $khTotal = $_POST['khTotal'];
-    $pro_discount = $_POST['p_discount'];
+    $khTotal = isset($_POST['khTotal']) ? $_POST['khTotal'] : null;
+    $pro_discount = isset($_POST['p_discount']) ? $_POST['p_discount'] : null;
+    $after_discount = isset($_POST['after_discount']) ? $_POST['after_discount'] : null;
+    $total_paid = isset($_POST['total_paid']) ? $_POST['total_paid'] : null;
+    $total_debt = isset($_POST['total_debt']) ? $_POST['total_debt'] : null;
 
+    print($after_discount);
 
     // Insert to payment details
-    $payment = $con->query("INSERT INTO `payment`(`InvoiceID`, `SubTotal`, `Discount`, `GrandTotal`, `KhmerTotal`) VALUES('$invoice_detail', '$cash', '$pro_discount', '$grandTotal', '$khTotal')");
+    $con->query("INSERT INTO `payment`(`InvoiceID`, `BeforeDiscount`, `Discount`, `AfterDiscount`, `TotalPaid`, `TotalDebt`, `KhmerTotal`) 
+        VALUES('$invoice_detail', '$cash', '$pro_discount', '$after_discount', '$total_paid', '$total_debt', '$khTotal')");
     header('location: Invoice.php');
 }
 
@@ -310,130 +314,153 @@ if (isset($_POST['placeOrder'])) {
             </div>
         </div>
         <div class="offcanvas-body">
-            <div>
-                <?= __("Sold To") . ':'  ?>
-                <?php
+            <form action="" method="post">
+                <div>
+                    <?= __("Sold To") . ':'  ?>
+                    <?php
 
-                if (isset($isSetorNot)) {
-                    $setName = $con->query("SELECT CustomerName FROM customer WHERE customerID = $isSetorNot");
-                    while ($customerName = $setName->fetch_assoc()) {
-                        echo $customerName['CustomerName']; // Add this line to display the customer name
+                    if (isset($isSetorNot)) {
+                        $setName = $con->query("SELECT CustomerName FROM customer WHERE customerID = $isSetorNot");
+                        while ($customerName = $setName->fetch_assoc()) {
+                            echo $customerName['CustomerName']; // Add this line to display the customer name
+                        }
                     }
-                }
+                    ?>
+                </div>
 
+                <?php
+                if (!empty($_SESSION['cart'])) {
+                    $total = 0;
+                    foreach ($_SESSION['cart'] as $key => $value) {
+
+                        //subtotal for each item price
+                        $subtotal = intval($value['p_amount']) * floatval($value['p_price']);
+
+                        //total amount as $ currency after subtotal for each item price
+                        $total +=  $subtotal;
+
+                        //total amount as Riel Currency symbol 
+                        $totalKhmer =  $total * 4100;
                 ?>
-            </div>
 
-            <?php
-            if (!empty($_SESSION['cart'])) {
-                $total = 0;
-                foreach ($_SESSION['cart'] as $key => $value) {
+                        <div class="d-flex mt-5 justify-content-between">
+                            <div class="d-flex gap-3">
+                                <img style="border-radius: 20px; width: 100px; height: 100px" src="../../Images/<?= $value['p_img'] ?>" alt="">
 
-                    //subtotal for each item price
-                    $subtotal = intval($value['p_amount']) * floatval($value['p_price']);
-
-                    //total amount as $ currency after subtotal for each item price
-                    $total +=  $subtotal;
-
-                    //total amount as Riel Currency symbol 
-                    $totalKhmer =  $total * 4100;
-            ?>
-
-                    <div class="d-flex mt-5 justify-content-between">
-                        <div class="d-flex gap-3">
-                            <img style="border-radius: 20px; width: 100px; height: 100px" src="../../Images/<?= $value['p_img'] ?>" alt="">
-
-                            <div class="d-flex flex-column gap-3">
-                                <h5> <?= $value['p_name'] ?> </h5>
-                                <div class="d-flex gap-4">
-                                    <!-- <div align=center class="plus shadow fs-4" style="cursor: grab; border-radius: 50%; width: 35px; height: 35px">
+                                <div class="d-flex flex-column gap-3">
+                                    <h5> <?= $value['p_name'] ?> </h5>
+                                    <div class="d-flex gap-4">
+                                        <!-- <div align=center class="plus shadow fs-4" style="cursor: grab; border-radius: 50%; width: 35px; height: 35px">
                                         &plus;
                                     </div> -->
 
-                                    <h5 class="inc_qty pt-2"> X <?= intval($value['p_amount']) ?> </h5>
-                                    <!-- <div align=center class="minus shadow fs-4" style="cursor: grab; border-radius: 50%; width: 35px; height: 35px">
+                                        <h5 class="inc_qty pt-2"> X <?= intval($value['p_amount']) ?> </h5>
+                                        <!-- <div align=center class="minus shadow fs-4" style="cursor: grab; border-radius: 50%; width: 35px; height: 35px">
                                         &minus;
                                     </div> -->
+                                    </div>
+                                    <h5 class="inc_price"> $ <?= number_format($subtotal, 2) ?> </h5>
                                 </div>
-                                <h5 class="inc_price"> $ <?= number_format($subtotal, 2) ?> </h5>
                             </div>
-                        </div>
 
-                        <!-- Remove item selected -->
-                        <a href="Order.php?remove=<?= $value['p_id'] ?>">
-                            <img src="../../Images/trash.png" width="35px" height="35px" style="cursor: grab;">
+                            <!-- Remove item selected -->
+                            <a href="Order.php?remove=<?= $value['p_id'] ?>">
+                                <img src="../../Images/trash.png" width="35px" height="35px" style="cursor: grab;">
+                            </a>
+                        </div>
+                    <?php }
+                    ?>
+                    <hr>
+                    <!-- Clear all item -->
+                    <div class="d-flex justify-content-end">
+                        <a href="Order.php?removeAll" style="text-decoration: none;">
+                            <button class=" btn btn-outline-danger px-4" style="margin-top: -25px;"><?= __('Clear') ?> </button>
                         </a>
                     </div>
-                <?php }
-                ?>
-                <hr>
-                <!-- Clear all item -->
-                <div class="d-flex justify-content-end">
-                    <a href="Order.php?removeAll" style="text-decoration: none;">
-                        <button class=" btn btn-outline-danger px-4" style="margin-top: -25px;"><?= __('Clear') ?> </button>
-                    </a>
-                </div>
-                <hr>
+                    <hr>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <h5><?= __('Sub-Total') ?>:</h5>
-                    <form action="" method="post">
-                        <input id="subtotal" name="totalSub" type="hidden" readonly value="<?= $total ?>">
-                    </form>
-                    <h5>$<?= number_format($total, 2) ?></h5>
-                </div>
+                    <!-- Total Before Discount -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <h5><?= __('Before Discount') ?>:</h5>
+                        <input id="before_discount" type="hidden" readonly value="<?= $total ?>">
+                        <h5>$ <?= number_format($total, 2) ?></h5>
+                    </div>
 
 
-                <!-- Discount Price -->
-                <div class="d-flex justify-content-between mt-4">
-                    <h5><?= __("Discount") ?>:</h5>
-                    <form action="" method="post" class="d-flex gap-3 justify-content-end">
-                        <input type="text" class="discount form-control input-disc w-50" name="p_discount"> <label for="" class="pt-2">%</label>
-                    </form>
-                </div>
+                    <!-- Discount Price -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <h5><?= __("Discount") ?>:</h5>
+                        <div class="input-group w-50">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">%</div>
+                            </div>
+                            <input type="number" name="p_discount" class="form-control input_discount">
+                        </div>
+                    </div>
 
 
-                <!-- Dynamic total currency -->
-                <div class="d-flex justify-content-between mt-4">
-                    <h5><?= __('Dollar Total') ?>:</h5>
-                    <form action="" method="post">
-                        <input class="discount_price" type="hidden" class="form-control" style="width: 30%;">
-                    </form>
-                    <h5 id="show_dollar_currency"> <?= '$ ' . number_format($total, 2)  ?></h5>
-                </div>
-
-                <div class="d-flex justify-content-between mt-4">
-                    <h5><?= __('Khmer Total') ?>:</h5>
-                    <form action="" method="post">
-                        <input class="kh_currency" type="hidden" class="form-control" style="width: 30%;">
-                    </form>
-                    <h5 id="show_kh_currency"> <?= '<b class="fw-bold"> &#6107 </b>' . number_format($totalKhmer, 2)   ?></h5>
-                </div>
-                <hr>
+                    <!-- Total After Discount -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <h5><?= __('After Discount') ?>:</h5>
+                        <input readonly type="hidden" name="after_discount" value="<?= $total ?>" class="after_discount form-control w-75">
+                        <h5 id="after_discount"> <?= '$ ' . number_format($total, 2)  ?></h5>
+                    </div>
 
 
-                <form action="" method="post" align=center>
-                    <input class="discount_price form-control" name="grandTotal" value="<?= $total ?>" type="hidden" style="width: 30%;">
-                    <input class="kh_currency form-control" name="khTotal" value="<?= $totalKhmer ?>" type="hidden" style="width: 100%;">
-                    <button type="submit" name="placeOrder" class="btn btn-outline-success w-75 p-3 fs-5"><?= __('Place order') ?> </button>
-                </form>
+                    <!-- Total Paid -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <h5><?= __("Total Paid") ?>:</h5>
+                        <div class="input-group w-50">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">$</div>
+                            </div>
+                            <input type="text" name="total_paid" class="total_paid form-control">
+                        </div>
+                    </div>
+
+                    <!-- Total Debt after paid -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <h5><?= __('Total Debt') ?>:</h5>
+                        <input readonly type="hidden" name="total_debt" class="total_debt form-control w-75">
+                        <h5 id="total_debt"> $ 0.00 </h5>
+                    </div>
+
+                    <!-- Total Khmer Currency -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <h5><?= __('Khmer Total') ?>:</h5>
+                        <input class="kh_currency form-control" name="khTotal" type="hidden" style="width: 100%">
+                        <h5 id="kh_currency"> &#6107 0.00 </h5>
+                    </div>
+                    <hr>
+
+                    <div>
+                        <input type="datetime" id="orderDate" name="orderDate" class="form-control">
+                    </div>
+                    <div align=center>
+                        <button type="submit" name="placeOrder" class="btn btn-outline-success w-75 p-3 fs-5"><?= __('Place order') ?> </button>
+                    </div>
 
 
-            <?php } else { ?>
-                <div align=center style="opacity: 0.5; margin-top: 50%">
-                    <h2><?= __('Nothing in Cart') ?> </h2>
-                    <div class="loadingio-spinner-magnify-dwv4kblnb9q">
-                        <div class="ldio-4guv2kbqa9d">
-                            <div>
+                <?php } else { ?>
+                    <div align=center style="opacity: 0.5; margin-top: 50%">
+                        <h2><?= __('Nothing in Cart') ?> </h2>
+                        <div class="loadingio-spinner-magnify-dwv4kblnb9q">
+                            <div class="ldio-4guv2kbqa9d">
                                 <div>
-                                    <div></div>
-                                    <div></div>
+                                    <div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            <?php } ?>
+                <?php } ?>
+            </form>
+
+
+
+
         </div>
     </div>
 </body>
@@ -443,6 +470,7 @@ if (isset($_POST['placeOrder'])) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="../../../Mart_POS_System/Action.js"></script>
 <script src="../../../Mart_POS_System/plugin/virtualSelection/virtual-select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script>
     // Customer Combobox
@@ -471,29 +499,54 @@ if (isset($_POST['placeOrder'])) {
 
 <script>
     $(document).ready(function() {
-        $('.input-disc').keyup(function() {
+        $('.input_discount').keyup(function() {
 
-            var subtotal = $('#subtotal').val();
-            var discount_num = $(this).val();
+            let before_discount = $('#before_discount').val();
+            let input_discount = $(this).val();
 
-            var result = subtotal * discount_num / 100;
-            var discount_price = subtotal - result;
+            let total_input_discount = before_discount * input_discount / 100;
+            let after_discount = before_discount - total_input_discount;
 
-            var result2 = subtotal * discount_num / 100;
-            var discount_price2 = subtotal - result;
+            $('.after_discount').val(after_discount.toFixed(3))
 
-            var kh_currency = discount_price * 4100
+            // Show after_discount in html
+            $('#after_discount').html('$ ' + after_discount.toFixed(3))
 
-            $('.discount_price').val(discount_price)
+
+            let total_paid = $('.total_paid').val();
+            let total_debt = after_discount - total_paid;
+            $('.total_debt').val(total_debt.toFixed(3))
+            $('#total_debt').html('$ ' + total_debt.toFixed(3))
+
+
+            let kh_currency = total_paid * 4100
             $('.kh_currency').val(kh_currency)
-
-            $('#show_dollar_currency').html('$' + (discount_price2).toFixed(2));
-
-            $('#show_kh_currency').html(kh_currency.toFixed(2).toString().split(",") + '<b class="h2"> &#6107 </b>');
+            $('#kh_currency').html('<b class="h5 fw-bold"> &#6107 </b>' + kh_currency.toFixed(3).toString().split(","));
 
         })
 
+        $('.total_paid').keyup(function() {
+            let total_paid = $(this).val();
+            let after_discount = $('.after_discount').val();
+
+            let total_debt = after_discount - total_paid;
+            $('.total_debt').val(total_debt.toFixed(3))
+            $('#total_debt').html('$ ' + total_debt.toFixed(3))
+
+            let kh_currency = total_paid * 4100
+            $('.kh_currency').val(kh_currency)
+            $('#kh_currency').html('<span> &#6107 </span>' + kh_currency.toFixed(2).toString().split(","));
+
+        })
     })
+
+
+    // Wait for the document to be ready
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // Set the input value to the current date
+        document.getElementById("orderDate").value = moment().format("YYYY-MM-DD HH:mm:ss A");
+    });
 </script>
 
 

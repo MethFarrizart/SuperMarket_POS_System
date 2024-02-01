@@ -57,17 +57,17 @@ if (isset($_GET['deletePurchaseID'])) {
             <div class="container-fluid">
                 <div class="row" style="margin-top: 120px;">
                     <div class="col-12">
-                        <div class="col-4">
+                        <!-- <div class="col-4">
                             <input type="text" class="form-control p-3 search" placeholder="Search..." id="search_purchase" style="border-radius:15px;">
-                        </div>
+                        </div> -->
                         <div class="bg-white mt-3 p-4 shadow border" style="border-radius: 20px;">
                             <div class="d-flex justify-content-between">
                                 <p class="fw-bold fs-5">
                                     <?= __('Purchase List') ?>
                                 </p>
-                                <p class="fw-bold fs-5 mx-5 px-5">
+                                <!-- <p class="fw-bold fs-5 mx-5 px-5">
                                     <?= __('Filter') ?> &nbsp; <i class="fa-solid fa-filter"></i>
-                                </p>
+                                </p> -->
                             </div>
 
                             <div class="d-flex gap-2 justify-content-between">
@@ -83,10 +83,12 @@ if (isset($_GET['deletePurchaseID'])) {
                                         <td><?= __("Purchase Date") ?></td>
                                         <td><?= __("PurchaseID") ?></td>
                                         <td><?= __("Supplier") ?></td>
-                                        <td><?= __("Before Discount") ?></td>
-                                        <td><?= __("After Discount") ?></td>
-                                        <td><?= __("Grand Total") ?></td>
-                                        <td><?= __("Status") ?></td>
+                                        <td class="text-end"><?= __("Before Discount") ?></td>
+                                        <td class="text-end"><?= __("After Discount") ?></td>
+                                        <td class="text-end"><?= __("Grand Total") ?></td>
+                                        <td><?= __("Payment Status") ?></td>
+                                        <td><?= __("Purchase Status") ?></td>
+                                        <td><?= __("Detail") ?></td>
                                     </tr>
                                 </thead>
 
@@ -102,7 +104,7 @@ if (isset($_GET['deletePurchaseID'])) {
                                     }
                                     $start_page = ($page - 1) * 5;
                                     $purchase = $con->query(
-                                        "SELECT p.*, s.SupplierID, s.SupplierName, st.StatusName, SUM(pu.BeforeDiscount) as BeforeDiscount, SUM(pu.AfterDiscount) as AfterDiscount, pay.Grand_total FROM purchase p 
+                                        "SELECT p.*, s.SupplierID, s.SupplierName, st.StatusName, SUM(pu.BeforeDiscount) as BeforeDiscount, SUM(pu.AfterDiscount) as AfterDiscount, pay.PaymentStatus, pay.Grand_total FROM purchase p 
                                         INNER JOIN supplier s ON p.SupplierID = s.SupplierID
                                         INNER JOIN purchase_detail pu ON pu.PurchaseID = p.PurchaseID
                                         INNER JOIN status st ON p.StatusID = st.StatusID
@@ -111,6 +113,7 @@ if (isset($_GET['deletePurchaseID'])) {
                                         ORDER BY p.PurchaseID DESC LIMIT $start_page, $record_per_page"
                                     );
                                     while ($row = $purchase->fetch_assoc()) {
+                                        $id = $row['PurchaseID'];
                                     ?>
                                         <tr>
                                             <td>
@@ -119,14 +122,15 @@ if (isset($_GET['deletePurchaseID'])) {
                                                         <i class="fa-solid fa-gear"></i>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="modal" data-bs-target="#viewPurchase-<?= $row['PurchaseID'] ?>" aria-controls="viewPurchase">
+                                                        <!-- <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="modal" data-bs-target="#viewPurchase=<?= $id ?>" aria-controls="viewPurchase">
                                                             <i style="color: purple;" class="fa fa-eye" aria-hidden="true"></i> &nbsp;
                                                             <?= __('View') ?>
-                                                        </button>
-                                                        <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="offcanvas" data-bs-target="#editPurchase-<?= $row['PurchaseID'] ?>" aria-controls="editPurchase">
+                                                        </button> -->
+
+                                                        <a onclick="purchase_detail()" href="PurchaseDetail.php?EditPurchase=<?= $row['PurchaseID'] ?>&PaymentStatus=<?php echo $row['PaymentStatus']; ?>" class="dropdown-item btn p-2 w-100 text-secondary">
                                                             <i style="color: green;" class="fa-solid fa-pen-to-square"></i> &nbsp;
                                                             <?= __('Edit') ?>
-                                                        </button>
+                                                        </a>
 
                                                         <button type="button" class="dropdown-item btn p-2 w-100 text-secondary" data-bs-toggle="modal" data-bs-target="#deletePurchase-<?= $row['PurchaseID'] ?>" aria-controls="deletePurchase">
                                                             <i style="color: red;" class="fa-sharp fa-solid fa-trash"></i> &nbsp;
@@ -138,10 +142,36 @@ if (isset($_GET['deletePurchaseID'])) {
                                             <td><?= $row['PurchaseDate'] ?></td>
                                             <td><?= "PUR" . $row['PurchaseID'] ?></td>
                                             <td><?= $row['SupplierName'] ?></td>
-                                            <td><?= '$ ' . number_format($row['BeforeDiscount'], 2) ?></td>
-                                            <td><?= '$ ' . number_format($row['AfterDiscount'], 2) ?></td>
-                                            <td><?= '$ ' . number_format($row['Grand_total'], 2) ?></td>
-                                            <td><?= $row['StatusName'] ?></td>
+                                            <td class="text-end"><?= '$ ' . number_format($row['BeforeDiscount'], 2) ?></td>
+                                            <td class="text-end"><?= '$ ' . number_format($row['AfterDiscount'], 2) ?></td>
+                                            <td class="text-end"><?= '$ ' . number_format($row['Grand_total'], 2) ?></td>
+                                            <td class="text-center">
+                                                <?php
+                                                if ($row['PaymentStatus'] == 8) {
+                                                    echo '<h2 class="text-bg-success badge rounded-pill">បានទូទាត់</h2>';
+                                                } else if ($row['PaymentStatus'] == 9) {
+                                                    echo '<h2 class="text-bg-danger badge rounded-pill">មិនទាន់បានទូទាត់</h2>';
+                                                }
+
+                                                ?>
+                                            </td>
+                                            <td class="text-center">
+                                                <?php
+                                                if ($row['StatusID'] == 6) {
+                                                    echo '<h2 class="text-bg-warning badge rounded-pill">រង់ចាំ</h2>';
+                                                } else if ($row['StatusID'] == 7) {
+                                                    echo '<h2 class="text-bg-success badge rounded-pill">បានបញ្ចប់</h2>';
+                                                } else if ($row['StatusID'] == 10) {
+                                                    echo '<h2 class="text-bg-primary mt-1 badge rounded-pill">កម្មង់</h2>';
+                                                }
+                                                ?>
+
+                                            </td>
+                                            <td class="fs-3 text-center">
+                                                <button class="border-0 clickIcon" style="background: none;" data-bs-toggle="collapse" role="button" data-bs-target="#collapseDetail-<?= $id ?>" aria-expanded="false" aria-controls="collapseDetail">
+                                                    <i class="changeIcon fa-regular fa-square-plus bg-success text-white"></i>
+                                                </button>
+                                            </td>
                                         </tr>
 
                                         <!-- Delete Purchase -->
@@ -172,24 +202,51 @@ if (isset($_GET['deletePurchaseID'])) {
                                             </div>
                                         </div>
 
-                                        <!-- Modal View Purchase -->
-                                        <div class="modal fade" style="background-color: rgba(0, 0, 0, 0.685);" id="viewPurchase-<?= $row['PurchaseID'] ?>" tabindex="-1" aria-labelledby="viewPurchaseLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-center modal-xl" role="document">
-                                                <div class="modal-content content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5 text-white" id="viewPurchaseLabel"><?= __('Purchase Control') ?></h1>
-                                                        <div class="rotate-img">
-                                                            <img src="https://cdn1.iconfinder.com/data/icons/everyday-5/64/cross_delete_stop_x_denied_stopped-256.png" width="40px" height="40px" data-bs-dismiss="modal" aria-label="Close" style="cursor: grab;">
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        eargegf
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <tbody class="collapse multi-collapse w-100 p-5 border-1 shadow" id="collapseDetail-<?= $id ?>">
+                                    <tr style="line-height: 55px;">
+                                        <td class="px-3"> <?= __("Product Name") ?> </td>
+                                        <td></td>
+
+                                        <td> <?= __("Quantity") ?> </td>
+                                        <td></td>
+
+                                        <td class="text-end"> <?= __("Price") ?> </td>
+                                        <td></td>
+                                        <td class="text-end"> <?= __("Before Discount") ?> </td>
+                                        <td class="text-end"> <?= __("Discount") ?> </td>
+                                        <td class="text-end"> <?= __("After Discount") ?> </td>
+                                        <td class="text-end"> <?= __("Sub Total") . ' (' .  __("With Tax") . ' 10%' . ')' ?> </td>
+                                    </tr>
+
+                                    <?php
+                                        $pro_query = $con->query("SELECT OD.*, P.ProductName, u.UnitName, pay.Grand_total  FROM purchase_detail OD
+                                                                            INNER JOIN product P ON P.ProductID = OD.ProductID
+                                                                            INNER JOIN unit u ON P.UnitID = u.UnitID
+                                                                            INNER JOIN purchasepayment pay ON pay.PurchaseID = OD.PurchaseID
+                                                                            WHERE OD.PurchaseID = $id");
+
+                                        while ($row = $pro_query->fetch_assoc()) {
+                                    ?>
+                                        <tr style="line-height: 45px;">
+                                            <td class="px-3"> <?= $row['ProductName'] ?></td>
+                                            <td></td>
+
+                                            <td class="text-center"> <?= $row['Qty'] . ' ' . $row['UnitName'] ?></td>
+                                            <td></td>
+
+                                            <td class="text-end"> <?= '$ ' . number_format($row['Price'], 2)  ?></td>
+                                            <td></td>
+                                            <td class="text-end"> <?= '$ ' . number_format($row['BeforeDiscount'], 2)  ?></td>
+                                            <td class="text-end"> <?= $row['Discount'] . '%'  ?></td>
+                                            <td class="text-end"> <?= '$ ' . number_format($row['AfterDiscount'], 2)  ?></td>
+                                            <td class="text-end"> <?= '$ ' . number_format($row['SubTotal'], 2)  ?></td>
+                                        </tr>
                                     <?php } ?>
+
                                 </tbody>
+                                </tbody>
+                            <?php } ?>
+
                             </table>
                             <!-- Show the record row by clicking page -->
                             <div class="d-flex gap-2 mt-3">
@@ -227,12 +284,20 @@ if (isset($_GET['deletePurchaseID'])) {
 
     </div>
 
-
 </body>
 <script src="../../Action.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
 
 <script>
+    // Click button change icon toggle
+    $(document).ready(function() {
+        $(".clickIcon").click(function() {
+            var icon = $(".changeIcon")
+            $(this).find(icon).toggleClass("fa-square-plus fa-square-minus");
+        });
+    });
+
+
     function purchase_detail() {
         let options = {
             lines: 15, // The number of lines to draw

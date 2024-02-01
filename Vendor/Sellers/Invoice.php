@@ -96,23 +96,25 @@ if ($_SESSION['StaffID']) {
                                     <table class="table ">
                                         <thead align=center>
                                             <tr>
-                                                <td class="fs-5 text-left"><?= __('Name') ?> </td>
-                                                <td class="fs-5"><?= __('Qty') ?> </td>
-                                                <td class="fs-5"><?= __('Price') ?> </td>
+                                                <td class="fs-5 text-start"><?= __('Name') ?> </td>
+                                                <td class="fs-5 text-end"><?= __('Qty') ?> </td>
+                                                <td class="fs-5 text-end"><?= __('Price') ?> </td>
                                                 <td class="fs-5 text-end"><?= __('Amount') ?> </td>
                                             </tr>
                                         </thead>
 
                                         <?php
-                                        $pro_detail = $con->query("SELECT  OD.ProductID, OD.Price, OD.Amount, OD.Price, OD.TotalCash, P.ProductID, P.ProductName FROM invoice_detail OD
-                                    INNER JOIN product P ON OD.ProductID = P.ProductID WHERE OD.InvoiceID = $match");
+                                        $pro_detail = $con->query("SELECT  OD.ProductID, OD.Price, U.UnitName, OD.Amount, OD.Price, OD.TotalCash, P.ProductID, P.ProductName FROM invoice_detail OD
+                                                        INNER JOIN product P ON OD.ProductID = P.ProductID 
+                                                        INNER JOIN unit U ON U.UnitID = P.UnitID
+                                                        WHERE OD.InvoiceID = $match");
                                         while ($detail = $pro_detail->fetch_assoc()) {
                                         ?>
-                                            <tbody align=center style="line-height: 50px;">
+                                            <tbody style="line-height: 50px;">
                                                 <tr>
-                                                    <td><?= $detail['ProductName'] ?></td>
-                                                    <td><?= $detail['Amount'] ?></td>
-                                                    <td>$ <?= number_format($detail['Price'], 2) ?></td>
+                                                    <td align="left"><?= $detail['ProductName'] ?></td>
+                                                    <td align="right"><?= $detail['Amount'] . ' ' . $detail['UnitName'] ?></td>
+                                                    <td align=right>$ <?= number_format($detail['Price'], 2) ?></td>
                                                     <td class="text-end"> $ <?= number_format($detail['TotalCash'], 2) ?></td>
                                                 </tr>
                                             </tbody>
@@ -133,9 +135,19 @@ if ($_SESSION['StaffID']) {
 
                                                     <?php } ?>
                                                     <td colspan="2" class="text-end fs-5">
-                                                        <b><?= __('Sub Total') ?>: &nbsp; $ <?= number_format($payment['SubTotal'], 2) ?></b> <br>
-                                                        <b><?= __('Grand Total') ?>: &nbsp; $ <?= number_format($payment['GrandTotal'], 2) ?></b> <br>
-                                                        <b><?= __('Khmer Total') ?>: &nbsp; <?= number_format($payment['KhmerTotal'], 2) . '<b class="h4 fw-bold"> &#6107 </b>' ?></b>
+                                                        <b><?= __('Sub Total') ?>: &nbsp; $ <?= number_format($payment['BeforeDiscount'], 2) ?></b> <br>
+                                                        <b><?= __('Discount') ?>: &nbsp; <?= $payment['Discount'] ?> % </b> <br>
+                                                        <b><?= __('After Discount') ?>: &nbsp; $ <?= number_format($payment['AfterDiscount'], 2) ?></b> <br>
+                                                        <b><?= __('Total Paid') ?>: &nbsp; $ <?= number_format($payment['TotalPaid'], 2) ?></b> <br>
+
+                                                        <?php
+                                                        if ($payment['TotalDebt'] != 0) {
+                                                        ?>
+                                                            <b><?= __('Total Debt') ?>: &nbsp; $ <?= number_format($payment['TotalDebt'], 2) ?></b> <br>
+
+                                                        <?php } ?>
+
+                                                        <b><?= __('Khmer Total') ?>: &nbsp; <?= '<b class="h4 fw-bold"> &#6107 </b>' .  number_format($payment['KhmerTotal'], 2)  ?></b>
                                                     </td>
                                                 </tr>
                                             </tfoot>
@@ -201,9 +213,3 @@ if ($_SESSION['StaffID']) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="../../../Mart_POS_System/Action.js"></script>
-
-<!-- <script>
-    function printPDF() {
-        window.open('../../Admin/AdminDashboard/print.php');
-    }
-</script> -->
